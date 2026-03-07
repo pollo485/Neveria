@@ -156,7 +156,7 @@ Dashboard con estadísticas rápidas, gráfica de pastel, gráfica de barras y t
 
 ## Autor
 
-Desarrollado por **[Jesus Alonso Valenzuela Armenta]** — Proyecto escolar de nevería *Freeze Dream* 🍦
+Desarrollado por **Jesus Alonso Valenzuela Armenta** — Proyecto escolar de nevería *Freeze Dream* 🍦
 
 ---
 
