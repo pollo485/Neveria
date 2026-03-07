@@ -1,0 +1,77 @@
+@{
+    ViewData["Title"] = "Ventas";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/ventas.css" />
+}
+
+<div class="ventas-wrapper">
+    <div class="ventas-header">
+        <h2>💳 Registro de Ventas</h2>
+        <a href="/Home/Productos" class="btn-nueva-venta">➕ Nueva venta</a>
+    </div>
+
+    <div class="ventas-table-wrapper">
+        <table class="ventas-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Total</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>001</td>
+                    <td>🍦 Cono de Fresa</td>
+                    <td>5</td>
+                    <td>$175.00</td>
+                    <td>05/03/2025</td>
+                    <td><span class="badge-estado badge-completada">Completada</span></td>
+                    <td><button class="btn-accion">Ver detalle</button></td>
+                </tr>
+                <tr>
+                    <td>002</td>
+                    <td>🍨 Copa de Vainilla</td>
+                    <td>3</td>
+                    <td>$120.00</td>
+                    <td>05/03/2025</td>
+                    <td><span class="badge-estado badge-pendiente">Pendiente</span></td>
+                    <td><button class="btn-accion">Ver detalle</button></td>
+                </tr>
+                <tr>
+                    <td>003</td>
+                    <td>🍫 Sundae Chocolate</td>
+                    <td>7</td>
+                    <td>$315.00</td>
+                    <td>04/03/2025</td>
+                    <td><span class="badge-estado badge-completada">Completada</span></td>
+                    <td><button class="btn-accion">Ver detalle</button></td>
+                </tr>
+                <tr>
+                    <td>004</td>
+                    <td>🥭 Paleta de Mango</td>
+                    <td>10</td>
+                    <td>$280.00</td>
+                    <td>04/03/2025</td>
+                    <td><span class="badge-estado badge-cancelada">Cancelada</span></td>
+                    <td><button class="btn-accion">Ver detalle</button></td>
+                </tr>
+                <tr>
+                    <td>005</td>
+                    <td>🌿 Helado de Menta</td>
+                    <td>4</td>
+                    <td>$168.00</td>
+                    <td>03/03/2025</td>
+                    <td><span class="badge-estado badge-completada">Completada</span></td>
+                    <td><button class="btn-accion">Ver detalle</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

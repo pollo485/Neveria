@@ -1,0 +1,157 @@
+/* =============================================
+   login.css - Freeze Dream | Vista: Login
+   ============================================= */
+
+* {
+    font-family: 'Nunito', sans-serif;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #F5C97A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* --- Decoraciones flotantes --- */
+.deco-left {
+    position: absolute;
+    left: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 6rem;
+    animation: floatLeft 3s ease-in-out infinite;
+    filter: drop-shadow(3px 4px 8px rgba(0,0,0,0.15));
+}
+
+.deco-right {
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 6rem;
+    animation: floatLeft 3s ease-in-out infinite 1.5s;
+    filter: drop-shadow(3px 4px 8px rgba(0,0,0,0.15));
+}
+
+@keyframes floatLeft {
+    0%, 100% { transform: translateY(-50%) rotate(-5deg); }
+    50%       { transform: translateY(calc(-50% - 14px)) rotate(5deg); }
+}
+
+/* --- Tarjeta principal --- */
+.login-card {
+    background: #F4607A;
+    border-radius: 28px;
+    padding: 46px 44px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 16px 48px rgba(244, 96, 122, 0.35);
+    position: relative;
+    z-index: 2;
+    animation: slideUp 0.5s cubic-bezier(.17,.67,.35,1.2) both;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(40px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+.login-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 1px 2px 4px rgba(0,0,0,0.15);
+}
+
+/* --- Labels --- */
+.form-label {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #1a1a1a;
+    margin-bottom: 6px;
+}
+
+/* --- Inputs --- */
+.freeze-input {
+    background: #B8E4F9;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    width: 100%;
+    color: #1a1a1a;
+    outline: none;
+    transition: box-shadow 0.2s, background 0.2s;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    box-sizing: border-box;
+}
+
+.freeze-input:focus {
+    background: #a0d8f1;
+    box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.5);
+}
+
+.freeze-input::placeholder {
+    color: #5a8fa3;
+}
+
+/* --- Botones --- */
+.btn-login {
+    background: #FFF8F0;
+    color: #222;
+    border: none;
+    border-radius: 30px;
+    padding: 13px;
+    font-size: 1.05rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    width: 100%;
+    transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+    cursor: pointer;
+}
+
+.btn-login:hover {
+    background: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+.btn-register {
+    background: #FFF8F0;
+    color: #222;
+    border: none;
+    border-radius: 30px;
+    padding: 13px;
+    font-size: 1.05rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    width: 100%;
+    transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+    cursor: pointer;
+    margin-top: 10px;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+}
+
+.btn-register:hover {
+    background: #fff;
+    color: #222;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+/* --- Responsive --- */
+@media (max-width: 600px) {
+    .deco-left,
+    .deco-right  { display: none; }
+    .login-card  { margin: 20px; padding: 32px 24px; }
+}

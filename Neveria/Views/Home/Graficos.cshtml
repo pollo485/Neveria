@@ -1,0 +1,156 @@
+@{
+    ViewData["Title"] = "Detalles Gráficos";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/graficos.css" />
+}
+
+<div class="graficos-wrapper">
+    <h2>📊 Detalles Gráficos</h2>
+
+    <!-- Stats rápidas -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="ico">🍦</div>
+            <div class="num">248</div>
+            <div class="lbl">Ventas este mes</div>
+        </div>
+        <div class="stat-card">
+            <div class="ico">💰</div>
+            <div class="num">$9,820</div>
+            <div class="lbl">Ingresos totales</div>
+        </div>
+        <div class="stat-card">
+            <div class="ico">🏆</div>
+            <div class="num">Fresa</div>
+            <div class="lbl">Sabor más vendido</div>
+        </div>
+        <div class="stat-card">
+            <div class="ico">👥</div>
+            <div class="num">134</div>
+            <div class="lbl">Clientes únicos</div>
+        </div>
+    </div>
+
+    <!-- Gráficas -->
+    <div class="charts-row">
+        <div class="chart-card">
+            <h5>🥧 Ventas por sabor</h5>
+            <canvas id="pieChart" class="chart-canvas"></canvas>
+        </div>
+        <div class="chart-card">
+            <h5>📈 Ventas por semana</h5>
+            <canvas id="barChart" class="chart-canvas"></canvas>
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="tabla-ventas">
+        <h5>📋 Registro de ventas recientes</h5>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio unitario</th>
+                    <th>Total</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>🍦 Cono de Fresa</td>
+                    <td>5</td>
+                    <td>$35</td>
+                    <td>$175</td>
+                    <td>05/03/2025</td>
+                </tr>
+                <tr>
+                    <td>🍨 Copa de Vainilla</td>
+                    <td>3</td>
+                    <td>$40</td>
+                    <td>$120</td>
+                    <td>05/03/2025</td>
+                </tr>
+                <tr>
+                    <td>🍫 Sundae Chocolate</td>
+                    <td>7</td>
+                    <td>$45</td>
+                    <td>$315</td>
+                    <td>04/03/2025</td>
+                </tr>
+                <tr>
+                    <td>🥭 Paleta de Mango</td>
+                    <td>10</td>
+                    <td>$28</td>
+                    <td>$280</td>
+                    <td>04/03/2025</td>
+                </tr>
+                <tr>
+                    <td>🌿 Helado de Menta</td>
+                    <td>4</td>
+                    <td>$42</td>
+                    <td>$168</td>
+                    <td>03/03/2025</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+    Chart.defaults.color = '#fff';
+    Chart.defaults.font.family = 'Nunito';
+
+    new Chart(document.getElementById('pieChart'), {
+        type: 'pie',
+        data: {
+            labels: ['Fresa', 'Vainilla', 'Chocolate', 'Mango', 'Menta'],
+            datasets: [{
+                data: [35, 22, 20, 15, 8],
+                backgroundColor: ['#F4607A', '#87CEEB', '#5D4037', '#F5C97A', '#5D8A4E'],
+                borderColor: 'rgba(255,255,255,0.3)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom', labels: { color: '#fff', font: { size: 12 } } }
+            }
+        }
+    });
+
+    new Chart(document.getElementById('barChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'],
+            datasets: [
+                {
+                    label: 'Este mes',
+                    data: [42, 68, 75, 63],
+                    backgroundColor: '#87CEEB',
+                    borderRadius: 8
+                },
+                {
+                    label: 'Mes anterior',
+                    data: [35, 55, 60, 50],
+                    backgroundColor: '#40E0D0',
+                    borderRadius: 8
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { labels: { color: '#fff' } } },
+            scales: {
+                x: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+            }
+        }
+    });
+</script>
+}

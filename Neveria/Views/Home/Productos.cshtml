@@ -1,0 +1,121 @@
+@{
+    ViewData["Title"] = "Productos";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/productos.css" />
+}
+
+<div class="comprar-wrapper">
+    <div class="search-row">
+        <input type="text" class="search-input" id="searchInput"
+               placeholder="Buscar o seleccionar producto..."
+               oninput="filtrarProductos()" />
+        <button class="search-btn" onclick="filtrarProductos()">🔍</button>
+    </div>
+
+    <div class="layout-comprar">
+        <!-- Lista de productos -->
+        <div>
+            <h3 class="productos-titulo">🍦 Nuestros Productos</h3>
+            <div class="productos-grid" id="productosGrid">
+                {{productos se renderizan con JS}}
+            </div>
+        </div>
+
+        <!-- Carrito -->
+        <div class="carrito-panel">
+            <h4>🛒 Lista de productos a comprar</h4>
+            <div id="carritoItems">
+                <div class="carrito-empty">Haz clic en un producto para agregarlo</div>
+            </div>
+            <div class="carrito-total" id="carritoTotal" style="display:none;"></div>
+            <button class="btn-comprar" id="btnFinalizar" style="display:none;" onclick="finalizar()">
+                ✅ Finalizar compra
+            </button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    const productos = [
+        { id: 1, nombre: "Cono de Fresa",     icon: "🍦", desc: "Sabor fresco a fresa",      precio: 35 },
+        { id: 2, nombre: "Copa de Vainilla",  icon: "🍨", desc: "Cremosa y suave",            precio: 40 },
+        { id: 3, nombre: "Sundae Chocolate",  icon: "🍫", desc: "Con salsa de chocolate",     precio: 45 },
+        { id: 4, nombre: "Paleta de Mango",   icon: "🥭", desc: "Tropical y refrescante",     precio: 28 },
+        { id: 5, nombre: "Helado de Menta",   icon: "🌿", desc: "Menta con chispas",          precio: 42 },
+        { id: 6, nombre: "Copa Rainbow",      icon: "🌈", desc: "Varios sabores",             precio: 55 },
+    ];
+
+    let carrito = {};
+
+    function renderProductos(lista) {
+        const grid = document.getElementById('productosGrid');
+        grid.innerHTML = lista.map(p => `
+            <div class="producto-card ${carrito[p.id] ? 'selected' : ''}" onclick="agregarAlCarrito(${p.id})">
+                <div class="icon">${p.icon}</div>
+                <h6>${p.nombre}</h6>
+                <p>${p.desc}</p>
+                <div class="precio">$${p.precio}</div>
+            </div>
+        `).join('');
+    }
+
+    function filtrarProductos() {
+        const q = document.getElementById('searchInput').value.toLowerCase();
+        renderProductos(productos.filter(p => p.nombre.toLowerCase().includes(q)));
+    }
+
+    function agregarAlCarrito(id) {
+        const p = productos.find(x => x.id === id);
+        if (!p) return;
+        carrito[id] ? carrito[id].cantidad++ : (carrito[id] = { ...p, cantidad: 1 });
+        renderCarrito();
+        filtrarProductos();
+    }
+
+    function quitarDelCarrito(id) {
+        delete carrito[id];
+        renderCarrito();
+        filtrarProductos();
+    }
+
+    function renderCarrito() {
+        const items = Object.values(carrito);
+        const container = document.getElementById('carritoItems');
+        const totalEl   = document.getElementById('carritoTotal');
+        const btnEl     = document.getElementById('btnFinalizar');
+
+        if (items.length === 0) {
+            container.innerHTML = '<div class="carrito-empty">Haz clic en un producto para agregarlo</div>';
+            totalEl.style.display = 'none';
+            btnEl.style.display   = 'none';
+            return;
+        }
+
+        container.innerHTML = items.map(item => `
+            <div class="carrito-item">
+                <span>${item.icon} ${item.nombre}</span>
+                <span>x${item.cantidad}</span>
+                <span>$${item.precio * item.cantidad}</span>
+                <button class="remove-btn" onclick="quitarDelCarrito(${item.id})">✕</button>
+            </div>
+        `).join('');
+
+        const total = items.reduce((s, i) => s + i.precio * i.cantidad, 0);
+        totalEl.textContent    = `Total: $${total}`;
+        totalEl.style.display  = 'block';
+        btnEl.style.display    = 'block';
+    }
+
+    function finalizar() {
+        alert('¡Compra realizada! 🎉 ¡Que disfrutes tus helados!');
+        carrito = {};
+        renderCarrito();
+        filtrarProductos();
+    }
+
+    renderProductos(productos);
+</script>
+}

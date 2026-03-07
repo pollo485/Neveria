@@ -1,0 +1,123 @@
+/* =============================================
+   ventas.css - Freeze Dream | Vista: Ventas
+   ============================================= */
+
+body {
+    background: #FFF8F0 !important;
+}
+
+.ventas-wrapper {
+    padding: 32px;
+    min-height: calc(100vh - 120px);
+}
+
+/* --- Header --- */
+.ventas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.ventas-header h2 {
+    font-family: 'Fredoka One', cursive;
+    color: #3E2723;
+    font-size: 2rem;
+    margin: 0;
+}
+
+.btn-nueva-venta {
+    background: #F4607A;
+    color: #fff;
+    border: none;
+    border-radius: 24px;
+    padding: 11px 28px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-nueva-venta:hover {
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(244, 96, 122, 0.4);
+}
+
+/* --- Tabla --- */
+.ventas-table-wrapper {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.ventas-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ventas-table thead tr {
+    background: #F4607A;
+    color: #fff;
+}
+
+.ventas-table thead th {
+    padding: 14px 18px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.95rem;
+    font-weight: normal;
+    text-align: left;
+}
+
+.ventas-table tbody tr {
+    border-bottom: 1px solid #f5eee7;
+    transition: background 0.15s;
+}
+
+.ventas-table tbody tr:hover { background: #FFF8F0; }
+
+.ventas-table tbody td {
+    padding: 13px 18px;
+    font-size: 0.93rem;
+    color: #3E2723;
+}
+
+/* --- Badges de estado --- */
+.badge-estado {
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.badge-completada { background: #d4edda; color: #155724; }
+.badge-pendiente  { background: #fff3cd; color: #856404; }
+.badge-cancelada  { background: #f8d7da; color: #721c24; }
+
+/* --- Botón acción --- */
+.btn-accion {
+    background: #87CEEB;
+    color: #222;
+    border: none;
+    border-radius: 14px;
+    padding: 5px 13px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.btn-accion:hover {
+    background: #5bbde4;
+    color: #fff;
+}
+
+/* --- Responsive --- */
+@media (max-width: 700px) {
+    .ventas-table-wrapper { overflow-x: scroll; }
+}

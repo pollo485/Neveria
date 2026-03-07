@@ -1,49 +1,152 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Neveria</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Neveria.styles.css" asp-append-version="true" />
+    <title>@ViewData["Title"] - Freeze Dream 🍦</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --sky: #87CEEB;
+            --cream: #FFF8F0;
+            --font-title: 'Fredoka One', cursive;
+            --font-body: 'Nunito', sans-serif;
+        }
+        * { font-family: var(--font-body); }
+        body { background: var(--cream); }
+
+        .navbar-freeze {
+            background: #c9b99a;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+        .navbar-freeze .brand {
+            font-family: var(--font-title);
+            font-size: 1.5rem;
+            color: #fff;
+            text-decoration: none;
+            margin-right: 10px;
+            text-shadow: 1px 2px 4px rgba(0,0,0,0.2);
+        }
+        .nav-pill {
+            background: var(--sky);
+            color: #222 !important;
+            border: none;
+            border-radius: 20px;
+            padding: 7px 18px;
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 0.92rem;
+            text-decoration: none !important;
+            transition: background 0.2s, transform 0.15s;
+            display: inline-block;
+        }
+        .nav-pill:hover {
+            background: #5bbde4;
+            color: #fff !important;
+            transform: translateY(-2px);
+        }
+        .nav-pill-dropdown {
+            background: var(--sky);
+            color: #222 !important;
+            border: none;
+            border-radius: 20px;
+            padding: 7px 18px;
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 0.92rem;
+            transition: background 0.2s, transform 0.15s;
+        }
+        .nav-pill-dropdown:hover,
+        .nav-pill-dropdown:focus,
+        .nav-pill-dropdown.show {
+            background: #5bbde4 !important;
+            color: #fff !important;
+            transform: translateY(-2px);
+            box-shadow: none !important;
+        }
+        .nav-pill-dropdown::after { display: none; }
+        .freeze-dropdown-menu {
+            background: #c9b99a;
+            border: none;
+            border-radius: 16px;
+            padding: 8px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            min-width: 160px;
+            margin-top: 6px !important;
+        }
+        .freeze-dropdown-menu .dropdown-item {
+            background: var(--sky);
+            color: #222 !important;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            padding: 7px 16px;
+            margin-bottom: 5px;
+            transition: background 0.15s, transform 0.15s;
+        }
+        .freeze-dropdown-menu .dropdown-item:last-child { margin-bottom: 0; }
+        .freeze-dropdown-menu .dropdown-item:hover {
+            background: #5bbde4;
+            color: #fff !important;
+            transform: translateX(3px);
+        }
+        footer {
+            background: #c9b99a;
+            color: #fff;
+            text-align: center;
+            padding: 12px;
+            font-family: var(--font-title);
+            font-size: 1rem;
+            margin-top: 40px;
+        }
+    </style>
+    @RenderSection("Styles", required: false)
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Neveria</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+
+<nav class="navbar-freeze">
+    <a class="brand" href="/Home/Inicio">🍦 Freeze Dream</a>
+
+    <a class="nav-pill" href="/Home/Inicio">Home</a>
+
+    <!-- Dropdown: Productos -->
+    <div class="dropdown">
+        <button class="nav-pill-dropdown dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            Productos
+        </button>
+        <ul class="dropdown-menu freeze-dropdown-menu">
+            <li><a class="dropdown-item" href="/Home/Productos">🛒 Comprar</a></li>
+            <li><a class="dropdown-item" href="/Home/DetallesProducto">✏️ Detalles</a></li>
+        </ul>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - Neveria - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    <!-- Dropdown: Detalles gráficos (incluye Ventas) -->
+    <div class="dropdown">
+        <button class="nav-pill-dropdown dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            Detalles gráficos
+        </button>
+        <ul class="dropdown-menu freeze-dropdown-menu">
+            <li><a class="dropdown-item" href="/Home/Graficos">📊 Ver gráficas</a></li>
+            <li><a class="dropdown-item" href="/Home/Ventas">💳 Ver ventas</a></li>
+        </ul>
+    </div>
+</nav>
+
+<main>
+    @RenderBody()
+</main>
+
+<footer>
+    🍦 Freeze Dream &copy; @DateTime.Now.Year — ¡Helados que enamoran!
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+@RenderSection("Scripts", required: false)
 </body>
 </html>
