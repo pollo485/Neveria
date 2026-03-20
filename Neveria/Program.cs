@@ -1,11 +1,18 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Neveria.Models;
+using Neveria.Models.dbFreezeDream;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Agregar servicios MVC
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<DbFreezeDreamContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("dbContext")));
 
 var app = builder.Build();
 
