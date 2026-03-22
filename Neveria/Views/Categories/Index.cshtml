@@ -4,38 +4,77 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.NameCategorie)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DescriptionCategorie)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NameCategorie)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DescriptionCategorie)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.TagCategorie">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.TagCategorie">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.TagCategorie">Delete</a>
-            </td>
-        </tr>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Categories.css" />
 }
-    </tbody>
-</table>
+
+<div class="categories-wrapper">
+
+    <div class="categories-header">
+        <h2>🏷️ Categorías</h2>
+        <button class="btn-nueva" data-bs-toggle="modal" data-bs-target="#modalCrear">
+            ➕ Nueva categoría
+        </button>
+    </div>
+
+    <div class="category-container">
+        @foreach (var item in Model)
+        {
+            <div class="category-card">
+                <div class="card-icon">🍦</div>
+                <h5 class="card-nombre">@Html.DisplayFor(modelItem => item.NameCategorie)</h5>
+                <p class="card-desc">@Html.DisplayFor(modelItem => item.DescriptionCategorie)</p>
+                <div class="card-actions">
+                    <a asp-action="Edit" asp-route-id="@item.TagCategorie" class="btn-accion btn-edit">✏️ Editar</a>
+                    <a asp-action="Details" asp-route-id="@item.TagCategorie" class="btn-accion btn-details">👁️ Ver</a>
+                    <a asp-action="Delete" asp-route-id="@item.TagCategorie" class="btn-accion btn-delete">🗑️ Eliminar</a>
+                </div>
+            </div>
+        }
+    </div>
+
+</div>
+
+<!-- MODAL Nueva Categoría -->
+<div class="modal fade" id="modalCrear" tabindex="-1" aria-labelledby="modalCrearLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content freeze-modal">
+
+            <div class="modal-header freeze-modal-header">
+                <h5 class="modal-title" id="modalCrearLabel">🏷️ Nueva Categoría</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body">
+                <form asp-action="Create" method="post" id="formCrear">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert-error"></div>
+
+                    <div class="modal-form-group">
+                        <label class="modal-label">Nombre de la categoría</label>
+                        <input name="NameCategorie" type="text" class="modal-input"
+                               placeholder="Ej: Cono, Copa, Paleta..." required />
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label class="modal-label">Descripción</label>
+                        <input name="DescriptionCategorie" type="text" class="modal-input"
+                               placeholder="Breve descripción..." />
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer freeze-modal-footer">
+                <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">✕ Cancelar</button>
+                <button type="submit" form="formCrear" class="btn-modal-guardar">💾 Guardar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

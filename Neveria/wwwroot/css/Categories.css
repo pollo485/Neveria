@@ -1,0 +1,255 @@
+/* =============================================
+   Categories.css - Freeze Dream
+   ============================================= */
+
+body { background: #FFF8F0 !important; }
+
+/* --- Wrapper principal --- */
+.categories-wrapper {
+    padding: 32px;
+    min-height: calc(100vh - 120px);
+}
+
+/* --- Header con título y botón --- */
+.categories-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.categories-header h2 {
+    font-family: 'Fredoka One', cursive;
+    color: #3E2723;
+    font-size: 2rem;
+    margin: 0;
+}
+
+.btn-nueva {
+    background: #F4607A;
+    color: #fff;
+    border: none;
+    border-radius: 24px;
+    padding: 11px 28px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    text-decoration: none;
+    display: inline-block;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.btn-nueva:hover {
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(244, 96, 122, 0.4);
+}
+
+/* --- Grid de tarjetas --- */
+.category-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+    justify-content: flex-start;
+}
+
+/* --- Tarjeta individual --- */
+.category-card {
+    background: #fff;
+    border-radius: 20px;
+    width: 260px;
+    padding: 24px 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border-top: 4px solid #F4607A;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+}
+
+.category-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+}
+
+.card-icon {
+    font-size: 2.8rem;
+    line-height: 1;
+}
+
+.card-nombre {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem;
+    color: #3E2723;
+    margin: 0;
+}
+
+.card-desc {
+    font-size: 0.85rem;
+    color: #888;
+    margin: 0;
+    line-height: 1.4;
+    flex: 1;
+}
+
+/* --- Botones de acción --- */
+.card-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 8px;
+    width: 100%;
+}
+
+.btn-accion {
+    border: none;
+    border-radius: 14px;
+    padding: 6px 12px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.15s, transform 0.15s;
+    display: inline-block;
+    font-family: 'Nunito', sans-serif;
+}
+
+.btn-accion:hover { transform: translateY(-2px); }
+
+.btn-edit    { background: #87CEEB; color: #1a3a4a; }
+.btn-details { background: #F5C97A; color: #3E2723; }
+.btn-delete  { background: #fde8ec; color: #c0392b; }
+
+.btn-edit:hover    { background: #5bbde4; color: #fff; }
+.btn-details:hover { background: #e8b84b; color: #fff; }
+.btn-delete:hover  { background: #F4607A; color: #fff; }
+
+/* --- Responsive --- */
+@media (max-width: 600px) {
+    .category-container { justify-content: center; }
+    .category-card { width: 100%; max-width: 340px; }
+}
+
+/* =============================================
+   MODAL — Nueva Categoría
+   ============================================= */
+
+.freeze-modal {
+    border-radius: 24px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+}
+
+.freeze-modal-header {
+    background: #F4607A;
+    padding: 18px 24px;
+    border-bottom: none;
+}
+
+.freeze-modal-header .modal-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    color: #fff;
+}
+
+/* --- Cuerpo del modal --- */
+.modal-body {
+    background: #FFF8F0;
+    padding: 28px 24px;
+}
+
+.modal-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 20px;
+}
+
+.modal-form-group:last-child { margin-bottom: 0; }
+
+.modal-label {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #6D4C41;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: 'Nunito', sans-serif;
+}
+
+.modal-input {
+    background: #fff;
+    border: 2px solid #e8ddd4;
+    border-radius: 14px;
+    padding: 11px 16px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #3E2723;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.modal-input:focus {
+    border-color: #F4607A;
+    box-shadow: 0 0 0 3px rgba(244, 96, 122, 0.15);
+}
+
+.modal-input::placeholder { color: #bbb; }
+
+/* --- Alerta de error --- */
+.alert-error {
+    background: #fde8ec;
+    color: #c0392b;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+/* --- Footer del modal --- */
+.freeze-modal-footer {
+    background: #FFF8F0;
+    border-top: 2px solid #f5eee7;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.btn-modal-cancelar {
+    background: #f5eee7;
+    color: #6D4C41;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 24px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.btn-modal-cancelar:hover { background: #e8ddd4; }
+
+.btn-modal-guardar {
+    background: #F4607A;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 24px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.btn-modal-guardar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(244, 96, 122, 0.4);
+}
