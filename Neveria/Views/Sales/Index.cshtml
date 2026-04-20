@@ -1,0 +1,177 @@
+@model IEnumerable<Neveria.Models.dbFreezeDream.Sale>
+@{
+    ViewData["Title"] = "Ventas";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Sales.css" />
+}
+
+<div class="sales-wrapper">
+
+    <div class="sales-header">
+        <h2>💳 Ventas</h2>
+        <a href="/Sales/Create" class="btn-nueva">➕ Nueva venta</a>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="freeze-table" style="width:100%; table-layout:fixed;">
+            <thead>
+                <tr>
+                    <th style="width:50px;">#</th>
+                    <th style="width:15%;">Empleado</th>
+                    <th style="width:12%;">Total</th>
+                    <th style="width:14%;">Fecha</th>
+                    <th style="width:12%;">Productos</th>
+                    <th style="width:200px;">Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="td-id">@item.TaglSale</td>
+                        <td class="td-nombre">@item.TagEmployeeNavigation?.TagUserNavigation?.Name</td>
+                        <td><span class="badge-total">$@item.DueTotal.ToString("N2")</span></td>
+                        <td class="td-desc">@item.DateSale.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td><span class="badge-count">@item.SaleDetails.Count productos</span></td>
+                        <td class="td-actions">
+                            <button class="btn-accion btn-details"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalDetails"
+                                    data-id="@item.TaglSale"
+                                    data-empleado="@item.TagEmployeeNavigation?.TagUserNavigation?.Name"
+                                    data-total="@item.DueTotal.ToString("N2")"
+                                    data-fecha="@item.DateSale.ToString("dd/MM/yyyy HH:mm")"
+                                    data-productos='@System.Text.Json.JsonSerializer.Serialize(item.SaleDetails.Select(d => new { d.TagProductNavigation.NameProduct, d.Quantity, d.Price }))'>
+                                👁️ Ver detalle
+                            </button>
+                            <button class="btn-accion btn-delete"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalDelete"
+                                    data-id="@item.TaglSale"
+                                    data-total="$@item.DueTotal.ToString("N2")">
+                                🗑️ Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- MODAL DETAILS -->
+<div class="modal fade" id="modalDetails" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content freeze-modal">
+            <div class="modal-header freeze-modal-header">
+                <h5 class="modal-title">👁️ Detalle de Venta</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="sale-detail-card">
+                    <!-- Info general -->
+                    <div class="sale-info-grid">
+                        <div class="detail-row">
+                            <span class="detail-label">ID Venta</span>
+                            <span class="detail-value" id="detailId"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Empleado</span>
+                            <span class="detail-value" id="detailEmpleado"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Fecha</span>
+                            <span class="detail-value" id="detailFecha"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Total</span>
+                            <span class="detail-value total-value" id="detailTotal"></span>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de productos -->
+                    <h6 class="productos-title">🛒 Productos vendidos</h6>
+                    <div class="productos-table-wrapper">
+                        <table class="productos-table">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio unit.</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detailProductos"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer freeze-modal-footer">
+                <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">✕ Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DELETE -->
+<div class="modal fade" id="modalDelete" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content freeze-modal">
+            <div class="modal-header freeze-modal-header-delete">
+                <h5 class="modal-title">🗑️ Eliminar Venta</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-confirm">
+                    <div class="delete-icon">⚠️</div>
+                    <p class="delete-msg">
+                        ¿Estás seguro que deseas eliminar la venta
+                        <strong id="deleteTotal"></strong>?
+                    </p>
+                    <p class="delete-warning">Esta acción no se puede deshacer.</p>
+                </div>
+                <form asp-action="Delete" method="post" id="formDelete">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="TaglSale" id="deleteId" />
+                </form>
+            </div>
+            <div class="modal-footer freeze-modal-footer">
+                <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">✕ Cancelar</button>
+                <button type="submit" form="formDelete" class="btn-modal-eliminar">🗑️ Sí, eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        document.getElementById('modalDetails').addEventListener('show.bs.modal', function (event) {
+            var btn = event.relatedTarget;
+            document.getElementById('detailId').textContent       = btn.getAttribute('data-id');
+            document.getElementById('detailEmpleado').textContent = btn.getAttribute('data-empleado');
+            document.getElementById('detailFecha').textContent    = btn.getAttribute('data-fecha');
+            document.getElementById('detailTotal').textContent    = '$' + btn.getAttribute('data-total');
+
+            // Renderizar tabla de productos
+            var productos = JSON.parse(btn.getAttribute('data-productos') || '[]');
+            var tbody = document.getElementById('detailProductos');
+            tbody.innerHTML = productos.map(p => `
+                <tr>
+                    <td>${p.NameProduct}</td>
+                    <td>${p.Quantity}</td>
+                    <td>$${p.Price.toFixed(2)}</td>
+                    <td>$${(p.Quantity * p.Price).toFixed(2)}</td>
+                </tr>
+            `).join('');
+        });
+
+        document.getElementById('modalDelete').addEventListener('show.bs.modal', function (event) {
+            var btn = event.relatedTarget;
+            document.getElementById('deleteId').value            = btn.getAttribute('data-id');
+            document.getElementById('deleteTotal').textContent   = btn.getAttribute('data-total');
+        });
+    </script>
+}

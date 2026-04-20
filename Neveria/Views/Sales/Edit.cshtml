@@ -1,0 +1,44 @@
+﻿@model Neveria.Models.dbFreezeDream.Sale
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Sale</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="TaglSale" />
+            <div class="form-group">
+                <label asp-for="TagEmployee" class="control-label"></label>
+                <select asp-for="TagEmployee" class="form-control" asp-items="ViewBag.TagEmployee"></select>
+                <span asp-validation-for="TagEmployee" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DueTotal" class="control-label"></label>
+                <input asp-for="DueTotal" class="form-control" />
+                <span asp-validation-for="DueTotal" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateSale" class="control-label"></label>
+                <input asp-for="DateSale" class="form-control" />
+                <span asp-validation-for="DateSale" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -186,8 +186,19 @@
                 Productos
             </button>
             <ul class="dropdown-menu freeze-dropdown-menu">
-                <li><a class="dropdown-item" href="/Home/Productos">🛒 Comprar</a></li>
-                <li><a class="dropdown-item" href="/Home/DetallesProducto">✏️ Detalles</a></li>
+                @* Si la vista de "Comprar" es la misma donde registras ventas *@
+                <li><a class="dropdown-item" href="/Sales">🛒 Comprar / Ver Ventas</a></li>
+
+                <li class="dropdown-divider"></li> @* Una línea divisoria para organizar *@
+
+                <li><a class="dropdown-item" href="/Products/index">🍦 Productos</a></li>
+                <li><a class="dropdown-item" href="/Categories/index">📁 Categorías</a></li>
+                <li><a class="dropdown-item" href="/Inventories/index">📦 Inventario</a></li>
+
+                <li class="dropdown-divider"></li>
+
+                @* Esta ruta ahora apunta al Index de Sales que es donde pusimos el botón de Nueva Venta *@
+                <li><a class="dropdown-item" href="/Sales">💳 Historial de Ventas</a></li>
             </ul>
         </div>
 
@@ -198,7 +209,8 @@
             </button>
             <ul class="dropdown-menu freeze-dropdown-menu">
                 <li><a class="dropdown-item" href="/Home/Graficos">📊 Ver gráficas</a></li>
-                <li><a class="dropdown-item" href="/Home/Ventas">💳 Ver ventas</a></li>
+                
+                <li><a class="dropdown-item" href="/Roles">🎭 Roles</a></li>
             </ul>
         </div>
     </nav>

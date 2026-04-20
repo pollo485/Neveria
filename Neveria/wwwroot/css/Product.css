@@ -1,0 +1,63 @@
+﻿/* Estilos específicos para la vista de Productos */
+.products-wrapper {
+    padding: 32px;
+    min-height: calc(100vh - 120px);
+}
+
+.products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+    .products-header h2 {
+        font-family: 'Fredoka One', cursive;
+        color: #3E2723;
+        font-size: 2rem;
+    }
+
+/* Tabla con diseño de tarjeta */
+.table-wrapper {
+    background: #fff !important;
+    border-radius: 20px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+    overflow: hidden;
+}
+
+.freeze-table thead tr {
+    background: #F4607A !important; /* Rosa característico de tu app */
+}
+
+.freeze-table thead th {
+    padding: 14px 20px !important;
+    font-family: 'Fredoka One', cursive !important;
+    color: #fff !important;
+    border: none !important;
+}
+
+.freeze-table tbody td {
+    padding: 14px 20px !important;
+    vertical-align: middle !important;
+    color: #3E2723 !important;
+    border: none !important;
+}
+
+/* Badges para el estado IsActive */
+.badge-activo {
+    background: #E8F5E2;
+    color: #2e7d32;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.badge-inactivo {
+    background: #fde8ec;
+    color: #c0392b;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}

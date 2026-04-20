@@ -1,0 +1,172 @@
+@model Neveria.Models.dbFreezeDream.Sale
+@{
+    ViewData["Title"] = "Nueva Venta";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Sales.css" />
+}
+
+<div class="sales-wrapper">
+    <div class="sales-header">
+        <h2>🛒 Nueva Venta</h2>
+        <a href="/Sales/Index" class="btn-volver">← Volver</a>
+    </div>
+
+    <div class="create-layout">
+
+        <!-- Columna izquierda: buscador + productos -->
+        <div class="col-productos">
+            <h4 class="col-title">📦 Productos disponibles</h4>
+
+            <div class="search-row">
+                <input type="text" id="searchProducto" class="search-input"
+                       placeholder="Buscar producto..." oninput="filtrarProductos()" />
+                <span class="search-icon">🔍</span>
+            </div>
+
+            <div class="productos-grid" id="productosGrid"></div>
+        </div>
+
+        <!-- Columna derecha: carrito + formulario -->
+        <div class="col-carrito">
+            <h4 class="col-title">🧾 Resumen de venta</h4>
+
+            <form asp-action="Create" method="post" id="formVenta">
+                @Html.AntiForgeryToken()
+
+                <div class="modal-form-group">
+                    <label class="modal-label">Empleado</label>
+                    <select name="TagEmployee" class="modal-input" asp-items="ViewBag.TagEmployee" required>
+                        <option value="">-- Selecciona empleado --</option>
+                    </select>
+                </div>
+
+                <!-- Campo oculto para la fecha -->
+                <input type="hidden" name="DateSale" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss")" />
+                <input type="hidden" name="DueTotal" id="hiddenTotal" value="0" />
+
+                <!-- Items del carrito se generan aquí dinámicamente -->
+                <div id="carritoContainer"></div>
+
+                <div class="carrito-summary">
+                    <div class="carrito-empty" id="carritoEmpty">
+                        Agrega productos desde la lista
+                    </div>
+                    <div id="carritoItems" style="display:none;">
+                        <div class="items-list" id="itemsList"></div>
+                        <div class="carrito-total">
+                            Total: <span id="totalDisplay">$0.00</span>
+                        </div>
+                        <button type="submit" class="btn-finalizar">✅ Registrar venta</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    // Productos cargados desde ViewBag
+    const productos = @Html.Raw(ViewBag.ProductosJson ?? "[]");
+    let carrito = {};
+
+    function filtrarProductos() {
+        const q = document.getElementById('searchProducto').value.toLowerCase();
+        renderProductos(productos.filter(p => p.nameProduct.toLowerCase().includes(q)));
+    }
+
+    function renderProductos(lista) {
+        const grid = document.getElementById('productosGrid');
+        grid.innerHTML = lista.map(p => `
+            <div class="producto-card ${carrito[p.tagProduct] ? 'selected' : ''}"
+                 onclick="agregarAlCarrito(${p.tagProduct})">
+                <div class="p-icon">🍦</div>
+                <div class="p-info">
+                    <span class="p-nombre">${p.nameProduct}</span>
+                    <span class="p-precio">$${p.unitPrice.toFixed(2)}</span>
+                    <span class="p-stock">Stock: ${p.stock}</span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function agregarAlCarrito(id) {
+        const p = productos.find(x => x.tagProduct === id);
+        if (!p) return;
+        if (carrito[id]) {
+            if (carrito[id].cantidad < p.stock) carrito[id].cantidad++;
+        } else {
+            carrito[id] = { ...p, cantidad: 1 };
+        }
+        renderCarrito();
+        filtrarProductos();
+    }
+
+    function quitarDelCarrito(id) {
+        delete carrito[id];
+        renderCarrito();
+        filtrarProductos();
+    }
+
+    function cambiarCantidad(id, delta) {
+        if (!carrito[id]) return;
+        carrito[id].cantidad += delta;
+        if (carrito[id].cantidad <= 0) delete carrito[id];
+        renderCarrito();
+        filtrarProductos();
+    }
+
+    function renderCarrito() {
+        const items     = Object.values(carrito);
+        const emptyEl   = document.getElementById('carritoEmpty');
+        const itemsEl   = document.getElementById('carritoItems');
+        const listEl    = document.getElementById('itemsList');
+        const container = document.getElementById('carritoContainer');
+        const totalEl   = document.getElementById('totalDisplay');
+        const hiddenTotal = document.getElementById('hiddenTotal');
+
+        if (items.length === 0) {
+            emptyEl.style.display  = 'block';
+            itemsEl.style.display  = 'none';
+            container.innerHTML    = '';
+            hiddenTotal.value      = '0';
+            return;
+        }
+
+        emptyEl.style.display = 'none';
+        itemsEl.style.display = 'block';
+
+        // Renderizar lista visual
+        listEl.innerHTML = items.map(item => `
+            <div class="carrito-item">
+                <span class="ci-nombre">🍦 ${item.nameProduct}</span>
+                <div class="ci-controls">
+                    <button type="button" class="ci-btn" onclick="cambiarCantidad(${item.tagProduct}, -1)">−</button>
+                    <span class="ci-qty">${item.cantidad}</span>
+                    <button type="button" class="ci-btn" onclick="cambiarCantidad(${item.tagProduct}, 1)">+</button>
+                </div>
+                <span class="ci-subtotal">$${(item.unitPrice * item.cantidad).toFixed(2)}</span>
+                <button type="button" class="ci-remove" onclick="quitarDelCarrito(${item.tagProduct})">✕</button>
+            </div>
+        `).join('');
+
+        // Generar inputs ocultos para el POST
+        container.innerHTML = items.map((item, i) => `
+            <input type="hidden" name="SaleDetails[${i}].TagProduct" value="${item.tagProduct}" />
+            <input type="hidden" name="SaleDetails[${i}].Quantity"   value="${item.cantidad}" />
+            <input type="hidden" name="SaleDetails[${i}].Price"      value="${item.unitPrice}" />
+        `).join('');
+
+        const total = items.reduce((s, i) => s + i.unitPrice * i.cantidad, 0);
+        totalEl.textContent   = '$' + total.toFixed(2);
+        hiddenTotal.value     = total.toFixed(2);
+    }
+
+    // Inicializar
+    renderProductos(productos);
+</script>
+}
