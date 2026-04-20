@@ -1,0 +1,215 @@
+/* =============================================
+   Sales.css - Freeze Dream
+   ============================================= */
+
+body { background: #FFF8F0 !important; }
+
+.sales-wrapper {
+    padding: 32px;
+    min-height: calc(100vh - 120px);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.sales-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.sales-header h2 {
+    font-family: 'Fredoka One', cursive;
+    color: #3E2723;
+    font-size: 2rem;
+    margin: 0;
+}
+
+.btn-nueva {
+    background: #F4607A;
+    color: #fff !important;
+    border: none;
+    border-radius: 24px;
+    padding: 11px 28px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-nueva:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(244,96,122,0.4); }
+
+.btn-volver {
+    background: #f5eee7;
+    color: #6D4C41 !important;
+    border: none;
+    border-radius: 24px;
+    padding: 11px 28px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.15s;
+}
+.btn-volver:hover { background: #e8ddd4; }
+
+/* =============================================
+   TABLA INDEX
+   ============================================= */
+
+.table-wrapper {
+    background: #fff !important;
+    border-radius: 20px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+    overflow: hidden !important;
+    width: 100% !important;
+    display: block !important;
+}
+
+.freeze-table { width:100% !important; border-collapse:collapse !important; margin:0 !important; table-layout:fixed !important; }
+.freeze-table thead tr { background: #F4607A !important; }
+.freeze-table thead th { padding:14px 16px !important; font-family:'Fredoka One',cursive !important; font-size:1rem !important; font-weight:normal !important; color:#fff !important; text-align:left !important; border:none !important; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.freeze-table tbody tr { border-bottom:1px solid #f5eee7 !important; transition:background 0.15s; }
+.freeze-table tbody tr:last-child { border-bottom:none !important; }
+.freeze-table tbody tr:hover { background:#FFF8F0 !important; }
+.freeze-table tbody tr:nth-child(even) { background:#fdf6ef !important; }
+.freeze-table tbody tr:nth-child(even):hover { background:#FFF8F0 !important; }
+.freeze-table tbody td { padding:14px 16px !important; font-size:0.9rem !important; color:#3E2723 !important; vertical-align:middle !important; border:none !important; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+.td-id     { font-family:'Fredoka One',cursive !important; color:#F4607A !important; font-size:1rem !important; }
+.td-nombre { font-weight:700 !important; }
+.td-desc   { color:#888 !important; }
+.td-actions { white-space:nowrap !important; overflow:visible !important; }
+
+.badge-total { background:#E8F5E2; color:#2e7d32; border-radius:20px; padding:4px 12px; font-weight:700; font-size:0.85rem; font-family:'Fredoka One',cursive; }
+.badge-count { background:#DFF2FB; color:#1a3a4a; border-radius:20px; padding:4px 12px; font-weight:700; font-size:0.8rem; }
+
+/* =============================================
+   BOTONES
+   ============================================= */
+.btn-accion { border:none !important; border-radius:14px !important; padding:6px 12px !important; font-size:0.78rem !important; font-weight:700 !important; cursor:pointer; transition:background 0.15s,transform 0.15s; display:inline-block; font-family:'Nunito',sans-serif !important; margin-right:4px; }
+.btn-accion:hover { transform:translateY(-2px); }
+.btn-details { background:#F5C97A !important; color:#3E2723 !important; }
+.btn-delete  { background:#fde8ec !important; color:#c0392b !important; }
+.btn-details:hover { background:#e8b84b !important; color:#fff !important; }
+.btn-delete:hover  { background:#F4607A !important; color:#fff !important; }
+
+/* =============================================
+   CREATE — Layout dos columnas
+   ============================================= */
+
+.create-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 28px;
+    align-items: start;
+}
+
+.col-title {
+    font-family: 'Fredoka One', cursive;
+    color: #3E2723;
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+}
+
+/* Buscador */
+.search-row { display:flex; align-items:center; gap:10px; margin-bottom:16px; position:relative; }
+.search-input { flex:1; background:#fff; border:2px solid #e8ddd4; border-radius:30px; padding:10px 18px; font-family:'Nunito',sans-serif; font-weight:600; font-size:0.9rem; color:#3E2723; outline:none; transition:border-color 0.2s; }
+.search-input:focus { border-color:#F4607A; }
+.search-icon { font-size:1.3rem; }
+
+/* Grid de productos */
+.productos-grid { display:flex; flex-direction:column; gap:10px; max-height:calc(100vh - 320px); overflow-y:auto; padding-right:4px; }
+.productos-grid::-webkit-scrollbar { width:5px; }
+.productos-grid::-webkit-scrollbar-thumb { background:#e0d5c8; border-radius:10px; }
+
+.producto-card { background:#fff; border:2px solid #e8ddd4; border-radius:16px; padding:12px 16px; display:flex; align-items:center; gap:12px; cursor:pointer; transition:all 0.2s; }
+.producto-card:hover { border-color:#87CEEB; background:#f0f9ff; transform:translateX(4px); }
+.producto-card.selected { background:#F4607A; border-color:#F4607A; color:#fff; box-shadow:0 4px 14px rgba(244,96,122,0.3); }
+
+.p-icon { font-size:2rem; flex-shrink:0; }
+.p-info { display:flex; flex-direction:column; flex:1; }
+.p-nombre { font-weight:700; font-size:0.92rem; color:#3E2723; }
+.producto-card.selected .p-nombre { color:#fff; }
+.p-precio { font-family:'Fredoka One',cursive; font-size:0.95rem; color:#F4607A; }
+.producto-card.selected .p-precio { color:#ffe0e6; }
+.p-stock { font-size:0.75rem; color:#aaa; }
+.producto-card.selected .p-stock { color:rgba(255,255,255,0.7); }
+
+/* Carrito */
+.col-carrito { position:sticky; top:20px; background:#fff; border-radius:20px; padding:24px; box-shadow:0 4px 20px rgba(0,0,0,0.08); }
+
+.modal-form-group { display:flex; flex-direction:column; gap:6px; margin-bottom:20px; }
+.modal-label { font-weight:700; font-size:0.82rem; color:#6D4C41; text-transform:uppercase; letter-spacing:0.5px; font-family:'Nunito',sans-serif; }
+.modal-input { background:#FFF8F0; border:2px solid #e8ddd4 !important; border-radius:14px !important; padding:10px 14px; font-family:'Nunito',sans-serif; font-size:0.93rem; font-weight:600; color:#3E2723; outline:none; transition:border-color 0.2s; width:100%; box-sizing:border-box; }
+.modal-input:focus { border-color:#F4607A !important; }
+
+.carrito-summary { margin-top:16px; border-top:2px solid #f5eee7; padding-top:16px; }
+.carrito-empty { text-align:center; color:#ccc; font-size:0.9rem; font-weight:600; padding:24px 0; }
+
+.items-list { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+.carrito-item { display:flex; align-items:center; gap:8px; padding:8px 12px; background:#FFF8F0; border-radius:12px; }
+.ci-nombre { flex:1; font-size:0.85rem; font-weight:700; color:#3E2723; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ci-controls { display:flex; align-items:center; gap:6px; }
+.ci-btn { background:#e8ddd4; border:none; border-radius:8px; width:24px; height:24px; font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.15s; }
+.ci-btn:hover { background:#F4607A; color:#fff; }
+.ci-qty { font-family:'Fredoka One',cursive; font-size:1rem; color:#F4607A; min-width:20px; text-align:center; }
+.ci-subtotal { font-family:'Fredoka One',cursive; font-size:0.9rem; color:#5D8A4E; min-width:60px; text-align:right; }
+.ci-remove { background:none; border:none; color:#ccc; cursor:pointer; font-size:0.8rem; padding:2px; transition:color 0.15s; }
+.ci-remove:hover { color:#e74c3c; }
+
+.carrito-total { font-family:'Fredoka One',cursive; font-size:1.3rem; color:#3E2723; text-align:right; margin-bottom:16px; padding-top:12px; border-top:2px dashed #f5eee7; }
+.carrito-total span { color:#F4607A; }
+
+.btn-finalizar { background:#F4607A; color:#fff; border:none; border-radius:24px; padding:14px; font-family:'Fredoka One',cursive; font-size:1.1rem; width:100%; cursor:pointer; transition:transform 0.15s,box-shadow 0.15s; }
+.btn-finalizar:hover { transform:translateY(-2px); box-shadow:0 6px 16px rgba(244,96,122,0.4); }
+
+/* =============================================
+   MODAL DETAILS — tabla de productos
+   ============================================= */
+.sale-detail-card { display:flex; flex-direction:column; gap:14px; }
+.sale-info-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.detail-row { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:#fff; border-radius:12px; border:2px solid #f0e8e0; }
+.detail-label { font-family:'Nunito',sans-serif; font-weight:700; font-size:0.8rem; color:#6D4C41; text-transform:uppercase; letter-spacing:0.5px; }
+.detail-value { font-family:'Nunito',sans-serif; font-weight:600; font-size:0.93rem; color:#3E2723; }
+.total-value { font-family:'Fredoka One',cursive !important; color:#F4607A !important; font-size:1.1rem !important; }
+
+.productos-title { font-family:'Fredoka One',cursive; color:#3E2723; font-size:1rem; margin:8px 0 10px; }
+
+.productos-table-wrapper { border-radius:14px; overflow:hidden; border:2px solid #f0e8e0; }
+.productos-table { width:100%; border-collapse:collapse; }
+.productos-table thead tr { background:#F4607A; }
+.productos-table thead th { padding:10px 14px; color:#fff; font-family:'Fredoka One',cursive; font-size:0.88rem; font-weight:normal; text-align:left; border:none; }
+.productos-table tbody tr { border-bottom:1px solid #f5eee7; }
+.productos-table tbody tr:last-child { border-bottom:none; }
+.productos-table tbody tr:nth-child(even) { background:#fdf6ef; }
+.productos-table tbody td { padding:10px 14px; font-size:0.88rem; color:#3E2723; border:none; }
+
+/* =============================================
+   MODALES COMPARTIDOS
+   ============================================= */
+.freeze-modal { border-radius:24px !important; overflow:hidden; border:none !important; box-shadow:0 16px 48px rgba(0,0,0,0.2); }
+.freeze-modal-header { background:#F4607A !important; padding:18px 24px; border-bottom:none !important; }
+.freeze-modal-header .modal-title { font-family:'Fredoka One',cursive; font-size:1.3rem; color:#fff !important; }
+.modal-body { background:#FFF8F0 !important; padding:24px; }
+.freeze-modal-footer { background:#FFF8F0 !important; border-top:2px solid #f5eee7 !important; padding:16px 24px; display:flex; justify-content:flex-end; gap:12px; }
+.btn-modal-cancelar { background:#f5eee7; color:#6D4C41; border:none; border-radius:20px; padding:10px 24px; font-family:'Fredoka One',cursive; font-size:0.95rem; cursor:pointer; }
+.btn-modal-cancelar:hover { background:#e8ddd4; }
+.freeze-modal-header-delete { background:#e74c3c !important; padding:18px 24px; border-bottom:none !important; }
+.freeze-modal-header-delete .modal-title { font-family:'Fredoka One',cursive; font-size:1.3rem; color:#fff !important; }
+.delete-confirm { text-align:center; padding:10px 0; }
+.delete-icon { font-size:3.5rem; margin-bottom:14px; }
+.delete-msg { font-size:1rem; color:#3E2723; font-weight:600; line-height:1.5; margin-bottom:8px; }
+.delete-msg strong { color:#e74c3c; }
+.delete-warning { font-size:0.83rem; color:#aaa; margin:0; }
+.btn-modal-eliminar { background:#e74c3c; color:#fff; border:none; border-radius:20px; padding:10px 24px; font-family:'Fredoka One',cursive; font-size:0.95rem; cursor:pointer; transition:transform 0.15s,box-shadow 0.15s; }
+.btn-modal-eliminar:hover { transform:translateY(-2px); box-shadow:0 6px 16px rgba(231,76,60,0.4); }
+
+@media (max-width:900px) {
+    .create-layout { grid-template-columns:1fr; }
+    .col-carrito { position:static; }
+    .sale-info-grid { grid-template-columns:1fr; }
+}
