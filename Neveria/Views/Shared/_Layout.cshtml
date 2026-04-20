@@ -13,8 +13,14 @@
             --font-title: 'Fredoka One', cursive;
             --font-body: 'Nunito', sans-serif;
         }
-        * { font-family: var(--font-body); }
-        body { background: var(--cream); }
+
+        * {
+            font-family: var(--font-body);
+        }
+
+        body {
+            background: var(--cream);
+        }
 
         .navbar-freeze {
             background: #c9b99a;
@@ -25,14 +31,16 @@
             flex-wrap: wrap;
             box-shadow: 0 3px 8px rgba(0,0,0,0.15);
         }
-        .navbar-freeze .brand {
-            font-family: var(--font-title);
-            font-size: 1.5rem;
-            color: #fff;
-            text-decoration: none;
-            margin-right: 10px;
-            text-shadow: 1px 2px 4px rgba(0,0,0,0.2);
-        }
+
+            .navbar-freeze .brand {
+                font-family: var(--font-title);
+                font-size: 1.5rem;
+                color: #fff;
+                text-decoration: none;
+                margin-right: 10px;
+                text-shadow: 1px 2px 4px rgba(0,0,0,0.2);
+            }
+
         .nav-pill {
             background: var(--sky);
             color: #222 !important;
@@ -46,11 +54,13 @@
             transition: background 0.2s, transform 0.15s;
             display: inline-block;
         }
-        .nav-pill:hover {
-            background: #5bbde4;
-            color: #fff !important;
-            transform: translateY(-2px);
-        }
+
+            .nav-pill:hover {
+                background: #5bbde4;
+                color: #fff !important;
+                transform: translateY(-2px);
+            }
+
         .nav-pill-dropdown {
             background: var(--sky);
             color: #222 !important;
@@ -62,15 +72,20 @@
             font-size: 0.92rem;
             transition: background 0.2s, transform 0.15s;
         }
-        .nav-pill-dropdown:hover,
-        .nav-pill-dropdown:focus,
-        .nav-pill-dropdown.show {
-            background: #5bbde4 !important;
-            color: #fff !important;
-            transform: translateY(-2px);
-            box-shadow: none !important;
-        }
-        .nav-pill-dropdown::after { display: none; }
+
+            .nav-pill-dropdown:hover,
+            .nav-pill-dropdown:focus,
+            .nav-pill-dropdown.show {
+                background: #5bbde4 !important;
+                color: #fff !important;
+                transform: translateY(-2px);
+                box-shadow: none !important;
+            }
+
+            .nav-pill-dropdown::after {
+                display: none;
+            }
+
         .freeze-dropdown-menu {
             background: #c9b99a;
             border: none;
@@ -80,22 +95,28 @@
             min-width: 160px;
             margin-top: 6px !important;
         }
-        .freeze-dropdown-menu .dropdown-item {
-            background: var(--sky);
-            color: #222 !important;
-            border-radius: 14px;
-            font-weight: 700;
-            font-size: 0.88rem;
-            padding: 7px 16px;
-            margin-bottom: 5px;
-            transition: background 0.15s, transform 0.15s;
-        }
-        .freeze-dropdown-menu .dropdown-item:last-child { margin-bottom: 0; }
-        .freeze-dropdown-menu .dropdown-item:hover {
-            background: #5bbde4;
-            color: #fff !important;
-            transform: translateX(3px);
-        }
+
+            .freeze-dropdown-menu .dropdown-item {
+                background: var(--sky);
+                color: #222 !important;
+                border-radius: 14px;
+                font-weight: 700;
+                font-size: 0.88rem;
+                padding: 7px 16px;
+                margin-bottom: 5px;
+                transition: background 0.15s, transform 0.15s;
+            }
+
+                .freeze-dropdown-menu .dropdown-item:last-child {
+                    margin-bottom: 0;
+                }
+
+                .freeze-dropdown-menu .dropdown-item:hover {
+                    background: #5bbde4;
+                    color: #fff !important;
+                    transform: translateX(3px);
+                }
+
         footer {
             background: #c9b99a;
             color: #fff;
@@ -105,48 +126,92 @@
             font-size: 1rem;
             margin-top: 40px;
         }
+        /* Reset para tablas personalizadas */
+        .freeze-table thead tr {
+            background: #F4607A !important;
+        }
+
+        .freeze-table thead th {
+            color: #fff !important;
+            border: none !important;
+            padding: 14px 20px !important;
+            font-family: 'Fredoka One', cursive !important;
+        }
+
+        .freeze-table tbody td {
+            border: none !important;
+        }
+
+        .freeze-table tbody tr:nth-child(even) {
+            background: #fdf6ef !important;
+        }
+
+        .freeze-table tbody tr:hover {
+            background: #FFF8F0 !important;
+        }
+
+        .table-wrapper {
+            background: #fff !important;
+            border-radius: 20px !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+            overflow: hidden !important;
+        }
+
+        .categories-wrapper {
+            width: 100% !important;
+        }
+
+        .table-wrapper {
+            width: 100% !important;
+            display: block !important;
+        }
+
+        main {
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
     </style>
     @RenderSection("Styles", required: false)
 </head>
 <body>
 
-<nav class="navbar-freeze">
-    <a class="brand" href="/Home/Inicio">🍦 Freeze Dream</a>
+    <nav class="navbar-freeze">
+        <a class="brand" href="/Home/Inicio">🍦 Freeze Dream</a>
 
-    <a class="nav-pill" href="/Home/Inicio">Home</a>
+        <a class="nav-pill" href="/Home/Inicio">Home</a>
 
-    <!-- Dropdown: Productos -->
-    <div class="dropdown">
-        <button class="nav-pill-dropdown dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-            Productos
-        </button>
-        <ul class="dropdown-menu freeze-dropdown-menu">
-            <li><a class="dropdown-item" href="/Home/Productos">🛒 Comprar</a></li>
-            <li><a class="dropdown-item" href="/Home/DetallesProducto">✏️ Detalles</a></li>
-        </ul>
-    </div>
+        <!-- Dropdown: Productos -->
+        <div class="dropdown">
+            <button class="nav-pill-dropdown dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                Productos
+            </button>
+            <ul class="dropdown-menu freeze-dropdown-menu">
+                <li><a class="dropdown-item" href="/Home/Productos">🛒 Comprar</a></li>
+                <li><a class="dropdown-item" href="/Home/DetallesProducto">✏️ Detalles</a></li>
+            </ul>
+        </div>
 
-    <!-- Dropdown: Detalles gráficos (incluye Ventas) -->
-    <div class="dropdown">
-        <button class="nav-pill-dropdown dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-            Detalles gráficos
-        </button>
-        <ul class="dropdown-menu freeze-dropdown-menu">
-            <li><a class="dropdown-item" href="/Home/Graficos">📊 Ver gráficas</a></li>
-            <li><a class="dropdown-item" href="/Home/Ventas">💳 Ver ventas</a></li>
-        </ul>
-    </div>
-</nav>
+        <!-- Dropdown: Detalles gráficos (incluye Ventas) -->
+        <div class="dropdown">
+            <button class="nav-pill-dropdown dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                Detalles gráficos
+            </button>
+            <ul class="dropdown-menu freeze-dropdown-menu">
+                <li><a class="dropdown-item" href="/Home/Graficos">📊 Ver gráficas</a></li>
+                <li><a class="dropdown-item" href="/Home/Ventas">💳 Ver ventas</a></li>
+            </ul>
+        </div>
+    </nav>
 
-<main>
-    @RenderBody()
-</main>
+    <main style="width: 100%; box-sizing: border-box;">
+        @RenderBody()
+    </main>
 
-<footer>
-    🍦 Freeze Dream &copy; @DateTime.Now.Year — ¡Helados que enamoran!
-</footer>
+    <footer>
+        🍦 Freeze Dream &copy; @DateTime.Now.Year — ¡Helados que enamoran!
+    </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-@RenderSection("Scripts", required: false)
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

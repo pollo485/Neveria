@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Neveria.Models.dbFreezeDream;
+using Neveria.Models.DTOs;
 
 namespace Neveria.Controllers
 {
@@ -21,6 +22,15 @@ namespace Neveria.Controllers
         // GET: Categories
         public async Task<IActionResult> Index()
         {
+            var CategoriesDTOs = (from category in _context.Categories
+                             select new CategoriesDTO
+                             {
+                                 CategoryId = category.TagCategorie,
+                                 CategoryName = category.NameCategorie,
+                                 CategoryDescription = category.DescriptionCategorie
+                             }).ToList();
+
+            //var Categories = await _context.Categories.ToListAsync(); // no se que va aqui
             return View(await _context.Categories.ToListAsync());
         }
 
@@ -136,15 +146,14 @@ namespace Neveria.Controllers
         // POST: Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int TagCategorie)
         {
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _context.Categories.FindAsync(TagCategorie);
             if (category != null)
             {
                 _context.Categories.Remove(category);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

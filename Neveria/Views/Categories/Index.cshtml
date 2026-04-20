@@ -1,7 +1,6 @@
 ﻿@model IEnumerable<Neveria.Models.dbFreezeDream.Category>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Categorías";
 }
 
 @section Styles {
@@ -17,58 +16,177 @@
         </button>
     </div>
 
-    <div class="category-container">
-        @foreach (var item in Model)
-        {
-            <div class="category-card">
-                <div class="card-icon">🍦</div>
-                <h5 class="card-nombre">@Html.DisplayFor(modelItem => item.NameCategorie)</h5>
-                <p class="card-desc">@Html.DisplayFor(modelItem => item.DescriptionCategorie)</p>
-                <div class="card-actions">
-                    <a asp-action="Edit" asp-route-id="@item.TagCategorie" class="btn-accion btn-edit">✏️ Editar</a>
-                    <a asp-action="Details" asp-route-id="@item.TagCategorie" class="btn-accion btn-details">👁️ Ver</a>
-                    <a asp-action="Delete" asp-route-id="@item.TagCategorie" class="btn-accion btn-delete">🗑️ Eliminar</a>
-                </div>
-            </div>
-        }
+    <div class="table-wrapper">
+        <table class="freeze-table" style="width:100%;">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="td-id">@item.TagCategorie</td>
+                        <td class="td-nombre">@Html.DisplayFor(modelItem => item.NameCategorie)</td>
+                        <td class="td-desc">@Html.DisplayFor(modelItem => item.DescriptionCategorie)</td>
+                        <td class="td-actions">
+
+                            <button class="btn-accion btn-edit"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEditar"
+                                    data-id="@item.TagCategorie"
+                                    data-nombre="@item.NameCategorie"
+                                    data-descripcion="@item.DescriptionCategorie">
+                                ✏️ Editar
+                            </button>
+
+                            <button class="btn-accion btn-details"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalDetails"
+                                    data-id="@item.TagCategorie"
+                                    data-nombre="@item.NameCategorie"
+                                    data-descripcion="@item.DescriptionCategorie">
+                                👁️ Ver
+                            </button>
+
+                            <button class="btn-accion btn-delete"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalDelete"
+                                    data-id="@item.TagCategorie"
+                                    data-nombre="@item.NameCategorie">
+                                🗑️ Eliminar
+                            </button>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 
 </div>
 
-<!-- MODAL Nueva Categoría -->
-<div class="modal fade" id="modalCrear" tabindex="-1" aria-labelledby="modalCrearLabel" aria-hidden="true">
+<!-- MODAL CREAR -->
+<div class="modal fade" id="modalCrear" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content freeze-modal">
-
             <div class="modal-header freeze-modal-header">
-                <h5 class="modal-title" id="modalCrearLabel">🏷️ Nueva Categoría</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <h5 class="modal-title">🏷️ Nueva Categoría</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-
             <div class="modal-body">
                 <form asp-action="Create" method="post" id="formCrear">
                     @Html.AntiForgeryToken()
-                    <div asp-validation-summary="ModelOnly" class="alert-error"></div>
-
                     <div class="modal-form-group">
                         <label class="modal-label">Nombre de la categoría</label>
-                        <input name="NameCategorie" type="text" class="modal-input"
-                               placeholder="Ej: Cono, Copa, Paleta..." required />
+                        <input name="NameCategorie" type="text" class="modal-input" placeholder="Ej: Cono, Copa, Paleta..." required />
                     </div>
-
                     <div class="modal-form-group">
                         <label class="modal-label">Descripción</label>
-                        <input name="DescriptionCategorie" type="text" class="modal-input"
-                               placeholder="Breve descripción..." />
+                        <input name="DescriptionCategorie" type="text" class="modal-input" placeholder="Breve descripción..." />
                     </div>
                 </form>
             </div>
-
             <div class="modal-footer freeze-modal-footer">
                 <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">✕ Cancelar</button>
                 <button type="submit" form="formCrear" class="btn-modal-guardar">💾 Guardar</button>
             </div>
+        </div>
+    </div>
+</div>
 
+<!-- MODAL EDITAR -->
+<div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content freeze-modal">
+            <div class="modal-header freeze-modal-header">
+                <h5 class="modal-title">✏️ Editar Categoría</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="Edit" method="post" id="formEditar">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="TagCategorie" id="editId" />
+                    <div class="modal-form-group">
+                        <label class="modal-label">Nombre de la categoría</label>
+                        <input name="NameCategorie" id="editNombre" type="text" class="modal-input" required />
+                    </div>
+                    <div class="modal-form-group">
+                        <label class="modal-label">Descripción</label>
+                        <input name="DescriptionCategorie" id="editDescripcion" type="text" class="modal-input" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer freeze-modal-footer">
+                <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">✕ Cancelar</button>
+                <button type="submit" form="formEditar" class="btn-modal-guardar">💾 Guardar cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DETAILS -->
+<div class="modal fade" id="modalDetails" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content freeze-modal">
+            <div class="modal-header freeze-modal-header">
+                <h5 class="modal-title">👁️ Detalle de Categoría</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-card">
+                    <div class="detail-icon">🍦</div>
+                    <div class="detail-row">
+                        <span class="detail-label">ID</span>
+                        <span class="detail-value" id="detailId"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Nombre</span>
+                        <span class="detail-value" id="detailNombre"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Descripción</span>
+                        <span class="detail-value" id="detailDescripcion"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer freeze-modal-footer">
+                <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">✕ Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DELETE -->
+<div class="modal fade" id="modalDelete" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content freeze-modal">
+            <div class="modal-header freeze-modal-header-delete">
+                <h5 class="modal-title">🗑️ Eliminar Categoría</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-confirm">
+                    <div class="delete-icon">⚠️</div>
+                    <p class="delete-msg">
+                        ¿Estás seguro que deseas eliminar la categoría
+                        <strong id="deleteNombre"></strong>?
+                    </p>
+                    <p class="delete-warning">Esta acción no se puede deshacer.</p>
+                </div>
+                <form asp-action="Delete" method="post" id="formDelete">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="TagCategorie" id="deleteId" />
+                </form>
+            </div>
+            <div class="modal-footer freeze-modal-footer">
+                <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">✕ Cancelar</button>
+                <button type="submit" form="formDelete" class="btn-modal-eliminar">🗑️ Sí, eliminar</button>
+            </div>
         </div>
     </div>
 </div>
@@ -77,4 +195,27 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        document.getElementById('modalEditar').addEventListener('show.bs.modal', function (event) {
+            var btn = event.relatedTarget;
+            var id  = btn.getAttribute('data-id');
+            document.getElementById('editId').value          = id;
+            document.getElementById('editNombre').value      = btn.getAttribute('data-nombre');
+            document.getElementById('editDescripcion').value = btn.getAttribute('data-descripcion');
+            document.getElementById('formEditar').action     = '/Categories/Edit/' + id;
+        });
+
+        document.getElementById('modalDetails').addEventListener('show.bs.modal', function (event) {
+            var btn = event.relatedTarget;
+            document.getElementById('detailId').textContent          = btn.getAttribute('data-id');
+            document.getElementById('detailNombre').textContent      = btn.getAttribute('data-nombre');
+            document.getElementById('detailDescripcion').textContent = btn.getAttribute('data-descripcion');
+        });
+
+        document.getElementById('modalDelete').addEventListener('show.bs.modal', function (event) {
+            var btn = event.relatedTarget;
+            document.getElementById('deleteId').value           = btn.getAttribute('data-id');
+            document.getElementById('deleteNombre').textContent = btn.getAttribute('data-nombre');
+        });
+    </script>
 }
