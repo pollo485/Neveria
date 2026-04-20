@@ -1,0 +1,214 @@
+@model IEnumerable<Neveria.Models.dbFreezeDream.Role>
+@{
+    ViewData["Title"] = "Roles";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Roles.css" />
+}
+
+<div class="roles-wrapper">
+
+    <div class="roles-header">
+        <h2>🎭 Roles</h2>
+        <button class="btn-nueva" data-bs-toggle="modal" data-bs-target="#modalCrear">
+            ➕ Nuevo rol
+        </button>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="freeze-table" style="width:100%; table-layout:fixed;">
+            <thead>
+                <tr>
+                    <th style="width:30px;">#</th>
+                    <th style="width:25%;">Nombre</th>
+                    <th>Descripción</th>
+                    <th style="width:25%;">Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="td-id">@item.TagRole</td>
+                        <td class="td-nombre">@item.NameRole</td>
+                        <td class="td-desc">@item.Description</td>
+                        <td class="td-actions">
+                            <button class="btn-accion btn-edit"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEditar"
+                                    data-id="@item.TagRole"
+                                    data-nombre="@item.NameRole"
+                                    data-descripcion="@item.Description">
+                                ✏️ Editar
+                            </button>
+                            <button class="btn-accion btn-details"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalDetails"
+                                    data-id="@item.TagRole"
+                                    data-nombre="@item.NameRole"
+                                    data-descripcion="@item.Description">
+                                👁️ Ver
+                            </button>
+                            <button class="btn-accion btn-delete"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalDelete"
+                                    data-id="@item.TagRole"
+                                    data-nombre="@item.NameRole">
+                                🗑️ Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- MODAL CREAR -->
+<div class="modal fade" id="modalCrear" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content freeze-modal">
+            <div class="modal-header freeze-modal-header">
+                <h5 class="modal-title">🎭 Nuevo Rol</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="Create" method="post" id="formCrear">
+                    @Html.AntiForgeryToken()
+                    <div class="modal-form-group">
+                        <label class="modal-label">Nombre del rol</label>
+                        <input name="NameRole" type="text" class="modal-input" placeholder="Ej: Administrador, Empleado..." required />
+                    </div>
+                    <div class="modal-form-group">
+                        <label class="modal-label">Descripción</label>
+                        <input name="Description" type="text" class="modal-input" placeholder="Breve descripción..." />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer freeze-modal-footer">
+                <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">✕ Cancelar</button>
+                <button type="submit" form="formCrear" class="btn-modal-guardar">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL EDITAR -->
+<div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content freeze-modal">
+            <div class="modal-header freeze-modal-header">
+                <h5 class="modal-title">✏️ Editar Rol</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="Edit" method="post" id="formEditar">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="TagRole" id="editId" />
+                    <div class="modal-form-group">
+                        <label class="modal-label">Nombre del rol</label>
+                        <input name="NameRole" id="editNombre" type="text" class="modal-input" required />
+                    </div>
+                    <div class="modal-form-group">
+                        <label class="modal-label">Descripción</label>
+                        <input name="Description" id="editDescripcion" type="text" class="modal-input" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer freeze-modal-footer">
+                <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">✕ Cancelar</button>
+                <button type="submit" form="formEditar" class="btn-modal-guardar">💾 Guardar cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DETAILS -->
+<div class="modal fade" id="modalDetails" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content freeze-modal">
+            <div class="modal-header freeze-modal-header">
+                <h5 class="modal-title">👁️ Detalle del Rol</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-card">
+                    <div class="detail-icon">🎭</div>
+                    <div class="detail-row">
+                        <span class="detail-label">ID</span>
+                        <span class="detail-value" id="detailId"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Nombre</span>
+                        <span class="detail-value" id="detailNombre"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Descripción</span>
+                        <span class="detail-value" id="detailDescripcion"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer freeze-modal-footer">
+                <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">✕ Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DELETE -->
+<div class="modal fade" id="modalDelete" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content freeze-modal">
+            <div class="modal-header freeze-modal-header-delete">
+                <h5 class="modal-title">🗑️ Eliminar Rol</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-confirm">
+                    <div class="delete-icon">⚠️</div>
+                    <p class="delete-msg">
+                        ¿Estás seguro que deseas eliminar el rol
+                        <strong id="deleteNombre"></strong>?
+                    </p>
+                    <p class="delete-warning">Esta acción no se puede deshacer.</p>
+                </div>
+                <form asp-action="Delete" method="post" id="formDelete">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="TagRole" id="deleteId" />
+                </form>
+            </div>
+            <div class="modal-footer freeze-modal-footer">
+                <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">✕ Cancelar</button>
+                <button type="submit" form="formDelete" class="btn-modal-eliminar">🗑️ Sí, eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        document.getElementById('modalEditar').addEventListener('show.bs.modal', function (event) {
+            var btn = event.relatedTarget;
+            var id  = btn.getAttribute('data-id');
+            document.getElementById('editId').value          = id;
+            document.getElementById('editNombre').value      = btn.getAttribute('data-nombre');
+            document.getElementById('editDescripcion').value = btn.getAttribute('data-descripcion');
+            document.getElementById('formEditar').action     = '/Roles/Edit/' + id;
+        });
+
+        document.getElementById('modalDetails').addEventListener('show.bs.modal', function (event) {
+            var btn = event.relatedTarget;
+            document.getElementById('detailId').textContent          = btn.getAttribute('data-id');
+            document.getElementById('detailNombre').textContent      = btn.getAttribute('data-nombre');
+            document.getElementById('detailDescripcion').textContent = btn.getAttribute('data-descripcion');
+        });
+
+        document.getElementById('modalDelete').addEventListener('show.bs.modal', function (event) {
+            var btn = event.relatedTarget;
+            document.getElementById('deleteId').value           = btn.getAttribute('data-id');
+            document.getElementById('deleteNombre').textContent = btn.getAttribute('data-nombre');
+        });
+    </script>
+}

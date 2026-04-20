@@ -1,71 +1,296 @@
-﻿@model IEnumerable<Neveria.Models.dbFreezeDream.User>
+@model IEnumerable<Neveria.Models.dbFreezeDream.User>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Usuarios";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Password)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsActive)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TagRoleNavigation)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsActive)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TagRoleNavigation.TagRole)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.TagUser">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.TagUser">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.TagUser">Delete</a>
-            </td>
-        </tr>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Users.css" />
 }
-    </tbody>
-</table>
+
+<div class="users-wrapper">
+    <div class="users-header">
+        <h2>👤 Usuarios</h2>
+        <button class="btn-nueva" data-bs-toggle="modal" data-bs-target="#modalCrear">
+            ➕ Nuevo usuario
+        </button>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="freeze-table" style="width:100%; table-layout:fixed;">
+            <thead>
+                <tr>
+                    <th style="width:45px;">#</th>
+                    <th style="width:18%;">Nombre</th>
+                    <th style="width:12%;">Usuario</th>
+                    <th style="width:22%;">Email</th>
+                    <th style="width:10%;">Rol</th>
+                    <th style="width:8%;">Activo</th>
+                    <th style="width:10%;">Fecha</th>
+                    <th style="width:15%;">Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="td-id">@item.TagUser</td>
+                        <td class="td-nombre">@item.Name</td>
+                        <td>@item.UserName</td>
+                        <td class="td-desc">@item.Email</td>
+                        <td><span class="badge-rol">@item.TagRoleNavigation?.NameRole</span></td>
+                        <td>
+                            @if (item.IsActive == true)
+                            {
+                                <span class="badge-activo">✅ Sí</span>
+                            }
+                            else
+                            {
+                                <span class="badge-inactivo">❌ No</span>
+                            }
+                        </td>
+                        <td class="td-desc">@item.CreatedAt.ToString("dd/MM/yyyy")</td>
+                        <td class="td-actions">
+                            <button class="btn-accion btn-edit"
+                                    data-bs-toggle="modal" data-bs-target="#modalEditar"
+                                    data-id="@item.TagUser"
+                                    data-nombre="@item.Name"
+                                    data-username="@item.UserName"
+                                    data-email="@item.Email"
+                                    data-password="@item.Password"
+                                    data-rol="@item.TagRole"
+                                    data-activo="@item.IsActive.ToString().ToLower()"
+                                    data-createdat="@item.CreatedAt.ToString("yyyy-MM-ddTHH:mm:ss")">
+                                ✏️ Editar
+                            </button>
+                            <button class="btn-accion btn-details"
+                                    data-bs-toggle="modal" data-bs-target="#modalDetails"
+                                    data-id="@item.TagUser"
+                                    data-nombre="@item.Name"
+                                    data-username="@item.UserName"
+                                    data-email="@item.Email"
+                                    data-rol="@item.TagRoleNavigation?.NameRole"
+                                    data-activo="@item.IsActive.ToString().ToLower()"
+                                    data-fecha="@item.CreatedAt.ToString("dd/MM/yyyy")">
+                                👁️ Ver
+                            </button>
+                            <button class="btn-accion btn-delete"
+                                    data-bs-toggle="modal" data-bs-target="#modalDelete"
+                                    data-id="@item.TagUser"
+                                    data-nombre="@item.Name">
+                                🗑️ Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- MODAL CREAR -->
+<div class="modal fade" id="modalCrear" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content freeze-modal">
+            <div class="modal-header freeze-modal-header">
+                <h5 class="modal-title">👤 Nuevo Usuario</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/Users/Create" method="post" id="formCrear">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="CreatedAt" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss")" />
+                    <div class="modal-grid">
+                        <div class="modal-form-group">
+                            <label class="modal-label">Nombre completo</label>
+                            <input name="Name" type="text" class="modal-input" placeholder="Nombre..." required />
+                        </div>
+                        <div class="modal-form-group">
+                            <label class="modal-label">Usuario</label>
+                            <input name="UserName" type="text" class="modal-input" placeholder="Username..." required />
+                        </div>
+                        <div class="modal-form-group">
+                            <label class="modal-label">Email</label>
+                            <input name="Email" type="email" class="modal-input" placeholder="correo@ejemplo.com" required />
+                        </div>
+                        <div class="modal-form-group">
+                            <label class="modal-label">Contraseña</label>
+                            <input name="Password" type="password" class="modal-input" placeholder="Contraseña..." required />
+                        </div>
+                        <div class="modal-form-group">
+                            <label class="modal-label">Rol</label>
+                            <select name="TagRole" class="modal-input" asp-items="ViewBag.TagRole" required>
+                                <option value="">-- Selecciona un rol --</option>
+                            </select>
+                        </div>
+                        <div class="modal-form-group">
+                            <label class="modal-label">Activo</label>
+                            <select name="IsActive" class="modal-input">
+                                <option value="true">✅ Sí</option>
+                                <option value="false">❌ No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Botones DENTRO del form para evitar redirecciones -->
+                    <div class="freeze-modal-footer" style="margin: 24px -24px -24px -24px; padding: 16px 24px;">
+                        <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">✕ Cancelar</button>
+                        <button type="submit" class="btn-modal-guardar">💾 Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL EDITAR -->
+<div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content freeze-modal">
+            <div class="modal-header freeze-modal-header">
+                <h5 class="modal-title">✏️ Editar Usuario</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/Users/Edit/0" method="post" id="formEditar">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="TagUser" id="editId" />
+                    <input type="hidden" name="CreatedAt" id="editCreatedAt" />
+                    <div class="modal-grid">
+                        <div class="modal-form-group">
+                            <label class="modal-label">Nombre completo</label>
+                            <input name="Name" id="editNombre" type="text" class="modal-input" required />
+                        </div>
+                        <div class="modal-form-group">
+                            <label class="modal-label">Usuario</label>
+                            <input name="UserName" id="editUsername" type="text" class="modal-input" required />
+                        </div>
+                        <div class="modal-form-group">
+                            <label class="modal-label">Email</label>
+                            <input name="Email" id="editEmail" type="email" class="modal-input" required />
+                        </div>
+                        <div class="modal-form-group">
+                            <label class="modal-label">Contraseña</label>
+                            <input name="Password" id="editPassword" type="password" class="modal-input" required />
+                        </div>
+                        <div class="modal-form-group">
+                            <label class="modal-label">Rol</label>
+                            <select name="TagRole" id="editRol" class="modal-input" asp-items="ViewBag.TagRole">
+                                <option value="">-- Selecciona un rol --</option>
+                            </select>
+                        </div>
+                        <div class="modal-form-group">
+                            <label class="modal-label">Activo</label>
+                            <select name="IsActive" id="editActivo" class="modal-input">
+                                <option value="true">✅ Sí</option>
+                                <option value="false">❌ No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Botones DENTRO del form -->
+                    <div class="freeze-modal-footer" style="margin: 24px -24px -24px -24px; padding: 16px 24px;">
+                        <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">✕ Cancelar</button>
+                        <button type="submit" class="btn-modal-guardar">💾 Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DETAILS -->
+<div class="modal fade" id="modalDetails" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content freeze-modal">
+            <div class="modal-header freeze-modal-header">
+                <h5 class="modal-title">👁️ Detalle de Usuario</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-card">
+                    <div class="detail-icon">👤</div>
+                    <div class="detail-row"><span class="detail-label">ID</span><span class="detail-value" id="detailId"></span></div>
+                    <div class="detail-row"><span class="detail-label">Nombre</span><span class="detail-value" id="detailNombre"></span></div>
+                    <div class="detail-row"><span class="detail-label">Usuario</span><span class="detail-value" id="detailUsername"></span></div>
+                    <div class="detail-row"><span class="detail-label">Email</span><span class="detail-value" id="detailEmail"></span></div>
+                    <div class="detail-row"><span class="detail-label">Rol</span><span class="detail-value" id="detailRol"></span></div>
+                    <div class="detail-row"><span class="detail-label">Activo</span><span class="detail-value" id="detailActivo"></span></div>
+                    <div class="detail-row"><span class="detail-label">Fecha registro</span><span class="detail-value" id="detailFecha"></span></div>
+                </div>
+            </div>
+            <div class="modal-footer freeze-modal-footer">
+                <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">✕ Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DELETE -->
+<div class="modal fade" id="modalDelete" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content freeze-modal">
+            <div class="modal-header freeze-modal-header-delete">
+                <h5 class="modal-title">🗑️ Eliminar Usuario</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-confirm">
+                    <div class="delete-icon">⚠️</div>
+                    <p class="delete-msg">¿Estás seguro que deseas eliminar al usuario <strong id="deleteNombre"></strong>?</p>
+                    <p class="delete-warning">Esta acción no se puede deshacer.</p>
+                </div>
+                <form action="/Users/Delete/0" method="post" id="formDelete">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="deleteId" />
+                </form>
+            </div>
+            <div class="modal-footer freeze-modal-footer">
+                <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">✕ Cancelar</button>
+                <button type="submit" form="formDelete" class="btn-modal-eliminar">🗑️ Sí, eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Editar: poblar campos
+        document.getElementById('modalEditar').addEventListener('show.bs.modal', function (event) {
+            var btn = event.relatedTarget;
+            var id  = btn.getAttribute('data-id');
+
+            document.getElementById('editId').value        = id;
+            document.getElementById('editNombre').value    = btn.getAttribute('data-nombre');
+            document.getElementById('editUsername').value  = btn.getAttribute('data-username');
+            document.getElementById('editEmail').value     = btn.getAttribute('data-email');
+            document.getElementById('editPassword').value  = btn.getAttribute('data-password');
+            document.getElementById('editRol').value       = btn.getAttribute('data-rol');
+            document.getElementById('editActivo').value    = btn.getAttribute('data-activo');
+            document.getElementById('editCreatedAt').value = btn.getAttribute('data-createdat');
+            document.getElementById('formEditar').action  = '/Users/Edit/' + id;
+        });
+
+        // Details: mostrar info
+        document.getElementById('modalDetails').addEventListener('show.bs.modal', function (event) {
+            var btn = event.relatedTarget;
+            document.getElementById('detailId').textContent       = btn.getAttribute('data-id');
+            document.getElementById('detailNombre').textContent   = btn.getAttribute('data-nombre');
+            document.getElementById('detailUsername').textContent = btn.getAttribute('data-username');
+            document.getElementById('detailEmail').textContent    = btn.getAttribute('data-email');
+            document.getElementById('detailRol').textContent      = btn.getAttribute('data-rol');
+            document.getElementById('detailActivo').textContent   = btn.getAttribute('data-activo') === 'true' ? '✅ Sí' : '❌ No';
+            document.getElementById('detailFecha').textContent    = btn.getAttribute('data-fecha');
+        });
+
+        // Delete: setear id y nombre
+        document.getElementById('modalDelete').addEventListener('show.bs.modal', function (event) {
+            var btn = event.relatedTarget;
+            var id  = btn.getAttribute('data-id');
+            document.getElementById('deleteId').value           = id;
+            document.getElementById('deleteNombre').textContent = btn.getAttribute('data-nombre');
+            document.getElementById('formDelete').action        = '/Users/Delete/' + id;
+        });
+    </script>
+}

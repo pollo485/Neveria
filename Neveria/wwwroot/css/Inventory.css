@@ -1,0 +1,354 @@
+/* =============================================
+   Inventory.css - Freeze Dream
+   ============================================= */
+
+body { background: #FFF8F0 !important; }
+
+.inventory-wrapper {
+    padding: 32px;
+    min-height: calc(100vh - 120px);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.inventory-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.inventory-header h2 {
+    font-family: 'Fredoka One', cursive;
+    color: #3E2723;
+    font-size: 2rem;
+    margin: 0;
+}
+
+.btn-nueva {
+    background: #F4607A;
+    color: #fff !important;
+    border: none;
+    border-radius: 24px;
+    padding: 11px 28px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    cursor: pointer;
+    display: inline-block;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.btn-nueva:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(244, 96, 122, 0.4);
+}
+
+/* =============================================
+   TABLA
+   ============================================= */
+
+.table-wrapper {
+    background: #fff !important;
+    border-radius: 20px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+    overflow: hidden !important;
+    width: 100% !important;
+    display: block !important;
+}
+
+.freeze-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin: 0 !important;
+    table-layout: fixed !important;
+}
+
+.freeze-table thead tr { background: #F4607A !important; }
+
+.freeze-table thead th {
+    padding: 14px 16px !important;
+    font-family: 'Fredoka One', cursive !important;
+    font-size: 0.95rem !important;
+    font-weight: normal !important;
+    color: #fff !important;
+    text-align: left !important;
+    border: none !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.freeze-table tbody tr {
+    border-bottom: 1px solid #f5eee7 !important;
+    transition: background 0.15s;
+}
+
+.freeze-table tbody tr:last-child { border-bottom: none !important; }
+.freeze-table tbody tr:hover { background: #FFF8F0 !important; }
+.freeze-table tbody tr:nth-child(even) { background: #fdf6ef !important; }
+.freeze-table tbody tr:nth-child(even):hover { background: #FFF8F0 !important; }
+
+.freeze-table tbody td {
+    padding: 12px 16px !important;
+    font-size: 0.88rem !important;
+    color: #3E2723 !important;
+    vertical-align: middle !important;
+    border: none !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.td-id {
+    font-family: 'Fredoka One', cursive !important;
+    color: #F4607A !important;
+    font-size: 1rem !important;
+}
+
+.td-nombre { font-weight: 700 !important; }
+.td-desc   { color: #888 !important; }
+.td-actions { white-space: nowrap !important; overflow: visible !important; }
+
+/* Badge stock */
+.badge-stock-ok {
+    background: #E8F5E2;
+    color: #2e7d32;
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+}
+
+.badge-stock-low {
+    background: #fff3cd;
+    color: #856404;
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+}
+
+.badge-stock-out {
+    background: #fde8ec;
+    color: #c0392b;
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+}
+
+/* =============================================
+   BOTONES DE ACCIÓN
+   ============================================= */
+
+.btn-accion {
+    border: none !important;
+    border-radius: 14px !important;
+    padding: 4px 8px !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.15s;
+    display: inline-block;
+    font-family: 'Nunito', sans-serif !important;
+    margin-right: 3px;
+}
+
+.btn-accion:hover { transform: translateY(-2px); }
+
+.btn-edit    { background: #87CEEB !important; color: #1a3a4a !important; }
+.btn-details { background: #F5C97A !important; color: #3E2723 !important; }
+.btn-delete  { background: #fde8ec !important; color: #c0392b !important; }
+
+.btn-edit:hover    { background: #5bbde4 !important; color: #fff !important; }
+.btn-details:hover { background: #e8b84b !important; color: #fff !important; }
+.btn-delete:hover  { background: #F4607A !important; color: #fff !important; }
+
+/* =============================================
+   MODALES
+   ============================================= */
+
+.freeze-modal {
+    border-radius: 24px !important;
+    overflow: hidden;
+    border: none !important;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+}
+
+.freeze-modal-header {
+    background: #F4607A !important;
+    padding: 18px 24px;
+    border-bottom: none !important;
+}
+
+.freeze-modal-header .modal-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    color: #fff !important;
+}
+
+.modal-body {
+    background: #FFF8F0 !important;
+    padding: 24px;
+}
+
+.modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 600px) {
+    .modal-grid { grid-template-columns: 1fr; }
+}
+
+.modal-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.modal-label {
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: #6D4C41;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: 'Nunito', sans-serif;
+}
+
+.modal-input {
+    background: #fff;
+    border: 2px solid #e8ddd4 !important;
+    border-radius: 14px !important;
+    padding: 10px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.93rem;
+    font-weight: 600;
+    color: #3E2723;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.modal-input:focus {
+    border-color: #F4607A !important;
+    box-shadow: 0 0 0 3px rgba(244, 96, 122, 0.15) !important;
+}
+
+.modal-input::placeholder { color: #bbb; }
+
+.freeze-modal-footer {
+    background: #FFF8F0 !important;
+    border-top: 2px solid #f5eee7 !important;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.btn-modal-cancelar {
+    background: #f5eee7;
+    color: #6D4C41;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 24px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.btn-modal-cancelar:hover { background: #e8ddd4; }
+
+.btn-modal-guardar {
+    background: #F4607A;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 24px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.btn-modal-guardar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(244, 96, 122, 0.4);
+}
+
+/* Details */
+.detail-card { display: flex; flex-direction: column; gap: 12px; }
+.detail-icon { font-size: 3rem; text-align: center; margin-bottom: 6px; }
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: #fff;
+    border-radius: 12px;
+    border: 2px solid #f0e8e0;
+}
+
+.detail-label {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: #6D4C41;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-value {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    font-size: 0.93rem;
+    color: #3E2723;
+}
+
+/* Delete */
+.freeze-modal-header-delete {
+    background: #e74c3c !important;
+    padding: 18px 24px;
+    border-bottom: none !important;
+}
+
+.freeze-modal-header-delete .modal-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    color: #fff !important;
+}
+
+.delete-confirm { text-align: center; padding: 10px 0; }
+.delete-icon { font-size: 3.5rem; margin-bottom: 14px; }
+.delete-msg { font-size: 1rem; color: #3E2723; font-weight: 600; line-height: 1.5; margin-bottom: 8px; }
+.delete-msg strong { color: #e74c3c; }
+.delete-warning { font-size: 0.83rem; color: #aaa; margin: 0; }
+
+.btn-modal-eliminar {
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 24px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.btn-modal-eliminar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(231, 76, 60, 0.4);
+}
+
+@media (max-width: 900px) {
+    .table-wrapper { overflow-x: auto; }
+}

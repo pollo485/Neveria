@@ -1,0 +1,274 @@
+﻿@model IEnumerable<Neveria.Models.dbFreezeDream.Inventory>
+
+@{
+    ViewData["Title"] = "Inventario";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Inventory.css" />
+}
+
+<div class="inventory-wrapper">
+    <div class="inventory-header">
+        <h2>📦 Inventario</h2>
+        <button class="btn-nueva" data-bs-toggle="modal" data-bs-target="#modalCrear">
+            ➕ Nuevo registro
+        </button>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="freeze-table" style="width:100%; table-layout:fixed;">
+            <thead>
+                <tr>
+                    <th style="width:50px;">#</th>
+                    <th style="width:25%;">Producto</th>
+                    <th style="width:15%;">Stock</th>
+                    <th style="width:15%;">Mínimo</th>
+                    <th style="width:15%;">Estado</th>
+                    <th style="width:20%;">Última actualización</th>
+                    <th style="width:20%;">Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="td-id">@item.TagInventory</td>
+                        <td class="td-nombre">@item.TagProductNavigation?.NameProduct</td>
+                        <td>@item.StockQuantity</td>
+                        <td class="td-desc">@item.MinQuantity</td>
+                        <td>
+                            @if (item.StockQuantity == 0)
+                            {
+                                <span class="badge-stock-out">❌ Sin stock</span>
+                            }
+                            else if (item.StockQuantity <= item.MinQuantity)
+                            {
+                                <span class="badge-stock-low">⚠️ Stock bajo</span>
+                            }
+                            else
+                            {
+                                <span class="badge-stock-ok">✅ OK</span>
+                            }
+                        </td>
+                        <td class="td-desc">@item.UpdateAt.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td class="td-actions">
+                            <button class="btn-accion btn-edit"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEditar"
+                                    data-id="@item.TagInventory"
+                                    data-tagproduct="@item.TagProduct"
+                                    data-stock="@item.StockQuantity"
+                                    data-minimo="@item.MinQuantity"
+                                    data-producto="@item.TagProductNavigation?.NameProduct">
+                                ✏️ Editar
+                            </button>
+                            <button class="btn-accion btn-details"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalDetails"
+                                    data-id="@item.TagInventory"
+                                    data-producto="@item.TagProductNavigation?.NameProduct"
+                                    data-stock="@item.StockQuantity"
+                                    data-minimo="@item.MinQuantity"
+                                    data-fecha="@item.UpdateAt.ToString("dd/MM/yyyy HH:mm")">
+                                👁️ Ver
+                            </button>
+                            <button class="btn-accion btn-delete"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalDelete"
+                                    data-id="@item.TagInventory"
+                                    data-producto="@item.TagProductNavigation?.NameProduct">
+                                🗑️ Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- MODAL CREAR -->
+<div class="modal fade" id="modalCrear" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content freeze-modal">
+            <div class="modal-header freeze-modal-header">
+                <h5 class="modal-title">📦 Nuevo Registro de Inventario</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/Inventories/Create" method="post" id="formCrear">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="UpdateAt" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss")" />
+                    <div class="modal-grid">
+                        <div class="modal-form-group" style="grid-column: span 2;">
+                            <label class="modal-label">Producto</label>
+                            <select name="TagProduct" class="modal-input" asp-items="ViewBag.TagProduct" required>
+                                <option value="">-- Selecciona un producto --</option>
+                            </select>
+                        </div>
+                        <div class="modal-form-group">
+                            <label class="modal-label">Cantidad en stock</label>
+                            <input name="StockQuantity" type="number" min="0" class="modal-input" placeholder="0" required />
+                        </div>
+                        <div class="modal-form-group">
+                            <label class="modal-label">Cantidad mínima</label>
+                            <input name="MinQuantity" type="number" min="0" class="modal-input" placeholder="0" required />
+                        </div>
+                    </div>
+                    <div class="freeze-modal-footer" style="margin: 24px -24px -24px -24px; padding: 16px 24px;">
+                        <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">✕ Cancelar</button>
+                        <button type="submit" class="btn-modal-guardar">💾 Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL EDITAR -->
+<div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content freeze-modal">
+            <div class="modal-header freeze-modal-header">
+                <h5 class="modal-title">✏️ Editar Inventario</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/Inventories/Edit/0" method="post" id="formEditar">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="TagInventory" id="editId" />
+                    <input type="hidden" name="TagProduct" id="editTagProduct" />
+                    <input type="hidden" name="UpdateAt" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss")" />
+                    <div class="modal-grid">
+                        <div class="modal-form-group" style="grid-column: span 2;">
+                            <label class="modal-label">Producto</label>
+                            <input type="text" id="editProductoNombre" class="modal-input" disabled />
+                        </div>
+                        <div class="modal-form-group">
+                            <label class="modal-label">Cantidad en stock</label>
+                            <input name="StockQuantity" id="editStock" type="number" min="0" class="modal-input" required />
+                        </div>
+                        <div class="modal-form-group">
+                            <label class="modal-label">Cantidad mínima</label>
+                            <input name="MinQuantity" id="editMinimo" type="number" min="0" class="modal-input" required />
+                        </div>
+                    </div>
+                    <div class="freeze-modal-footer" style="margin: 24px -24px -24px -24px; padding: 16px 24px;">
+                        <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">✕ Cancelar</button>
+                        <button type="submit" class="btn-modal-guardar">💾 Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DETAILS -->
+<div class="modal fade" id="modalDetails" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content freeze-modal">
+            <div class="modal-header freeze-modal-header">
+                <h5 class="modal-title">👁️ Detalle de Inventario</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-card">
+                    <div class="detail-icon">📦</div>
+                    <div class="detail-row">
+                        <span class="detail-label">ID</span>
+                        <span class="detail-value" id="detailId"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Producto</span>
+                        <span class="detail-value" id="detailProducto"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Stock actual</span>
+                        <span class="detail-value" id="detailStock"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Stock mínimo</span>
+                        <span class="detail-value" id="detailMinimo"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Última actualización</span>
+                        <span class="detail-value" id="detailFecha"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer freeze-modal-footer">
+                <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">✕ Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DELETE -->
+<div class="modal fade" id="modalDelete" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content freeze-modal">
+            <div class="modal-header freeze-modal-header-delete">
+                <h5 class="modal-title">🗑️ Eliminar Registro</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-confirm">
+                    <div class="delete-icon">⚠️</div>
+                    <p class="delete-msg">
+                        ¿Estás seguro que deseas eliminar el inventario de
+                        <strong id="deleteProducto"></strong>?
+                    </p>
+                    <p class="delete-warning">Esta acción no se puede deshacer.</p>
+                </div>
+                <form action="/Inventories/Delete/0" method="post" id="formDelete">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="deleteId" />
+                </form>
+            </div>
+            <div class="modal-footer freeze-modal-footer">
+                <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">✕ Cancelar</button>
+                <button type="submit" form="formDelete" class="btn-modal-eliminar">🗑️ Sí, eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Editar
+        document.getElementById('modalEditar').addEventListener('show.bs.modal', function (event) {
+            var btn = event.relatedTarget;
+            var id  = btn.getAttribute('data-id');
+
+            document.getElementById('editId').value              = id;
+            document.getElementById('editTagProduct').value      = btn.getAttribute('data-tagproduct');
+            document.getElementById('editStock').value           = btn.getAttribute('data-stock');
+            document.getElementById('editMinimo').value          = btn.getAttribute('data-minimo');
+            document.getElementById('editProductoNombre').value  = btn.getAttribute('data-producto');
+            document.getElementById('formEditar').action         = '/Inventories/Edit/' + id;
+        });
+
+        // Details
+        document.getElementById('modalDetails').addEventListener('show.bs.modal', function (event) {
+            var btn = event.relatedTarget;
+            document.getElementById('detailId').textContent       = btn.getAttribute('data-id');
+            document.getElementById('detailProducto').textContent = btn.getAttribute('data-producto');
+            document.getElementById('detailStock').textContent    = btn.getAttribute('data-stock');
+            document.getElementById('detailMinimo').textContent   = btn.getAttribute('data-minimo');
+            document.getElementById('detailFecha').textContent    = btn.getAttribute('data-fecha');
+        });
+
+        // Delete
+        document.getElementById('modalDelete').addEventListener('show.bs.modal', function (event) {
+            var btn = event.relatedTarget;
+            var id  = btn.getAttribute('data-id');
+            document.getElementById('deleteId').value              = id;
+            document.getElementById('deleteProducto').textContent  = btn.getAttribute('data-producto');
+            document.getElementById('formDelete').action           = '/Inventories/Delete/' + id;
+        });
+    </script>
+}
