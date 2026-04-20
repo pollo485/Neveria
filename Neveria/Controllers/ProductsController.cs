@@ -21,81 +21,41 @@ namespace Neveria.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            var dbFreezeDreamContext = _context.Products.Include(p => p.TagCategorieNavigation);
-            return View(await dbFreezeDreamContext.ToListAsync());
-        }
+            // Cargamos la lista para el select de los modales
+            ViewData["TagCategorie"] = new SelectList(_context.Categories, "TagCategorie", "NameCategorie");
 
-        // GET: Products/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Products
-                .Include(p => p.TagCategorieNavigation)
-                .FirstOrDefaultAsync(m => m.TagProduct == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return View(product);
-        }
-
-        // GET: Products/Create
-        public IActionResult Create()
-        {
-            ViewData["TagCategorie"] = new SelectList(_context.Categories, "TagCategorie", "TagCategorie");
-            return View();
+            // IMPORTANTE: .Include para traer el nombre de la categoría
+            var products = await _context.Products.Include(p => p.TagCategorieNavigation).ToListAsync();
+            return View(products);
         }
 
         // POST: Products/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("TagProduct,TagCategorie,NameProduct,UnitPrice,DescriptionProduct,IsActive")] Product product)
         {
+            // Quitamos la navegación para que no falle la validación (igual que en Users)
+            ModelState.Remove("TagCategorieNavigation");
+
             if (ModelState.IsValid)
             {
                 _context.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TagCategorie"] = new SelectList(_context.Categories, "TagCategorie", "TagCategorie", product.TagCategorie);
-            return View(product);
-        }
 
-        // GET: Products/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            ViewData["TagCategorie"] = new SelectList(_context.Categories, "TagCategorie", "TagCategorie", product.TagCategorie);
-            return View(product);
+            ViewData["TagCategorie"] = new SelectList(_context.Categories, "TagCategorie", "NameCategorie", product.TagCategorie);
+            return RedirectToAction(nameof(Index));
         }
 
         // POST: Products/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("TagProduct,TagCategorie,NameProduct,UnitPrice,DescriptionProduct,IsActive")] Product product)
         {
-            if (id != product.TagProduct)
-            {
-                return NotFound();
-            }
+            if (id != product.TagProduct) return NotFound();
+
+            ModelState.Remove("TagCategorieNavigation");
 
             if (ModelState.IsValid)
             {
@@ -106,38 +66,13 @@ namespace Neveria.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductExists(product.TagProduct))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!ProductExists(product.TagProduct)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TagCategorie"] = new SelectList(_context.Categories, "TagCategorie", "TagCategorie", product.TagCategorie);
-            return View(product);
-        }
-
-        // GET: Products/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Products
-                .Include(p => p.TagCategorieNavigation)
-                .FirstOrDefaultAsync(m => m.TagProduct == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return View(product);
+            ViewData["TagCategorie"] = new SelectList(_context.Categories, "TagCategorie", "NameCategorie", product.TagCategorie);
+            return RedirectToAction(nameof(Index));
         }
 
         // POST: Products/Delete/5
@@ -149,9 +84,8 @@ namespace Neveria.Controllers
             if (product != null)
             {
                 _context.Products.Remove(product);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

@@ -1,59 +1,267 @@
 ﻿@model IEnumerable<Neveria.Models.dbFreezeDream.Product>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Productos";
 }
 
-<h1>Index</h1>
+<link rel="stylesheet" href="~/css/Categories.css" />
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.NameProduct)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UnitPrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DescriptionProduct)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsActive)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TagCategorieNavigation)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NameProduct)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UnitPrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DescriptionProduct)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsActive)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TagCategorieNavigation.TagCategorie)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.TagProduct">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.TagProduct">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.TagProduct">Delete</a>
-            </td>
-        </tr>
+<style>
+    /* Ajuste para que la tabla no se corte */
+    .table-responsive-custom {
+        width: 100%;
+        overflow-x: auto;
+        background: white;
+        border-radius: 15px;
+        padding: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .freeze-table {
+        width: 100% !important;
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+</style>
+
+<div class="categories-wrapper">
+    <div class="categories-header">
+        <h2>🍦 Gestión de Productos</h2>
+        <button class="btn-nueva" data-bs-toggle="modal" data-bs-target="#modalCrear">
+            ✨ Nuevo Producto
+        </button>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="freeze-table">
+            <thead>
+                <tr>
+                    <th># ID</th>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Categoría</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="td-id">@item.TagProduct</td>
+                        <td class="td-nombre">@item.NameProduct</td>
+                        <td><strong>$@item.UnitPrice</strong></td>
+                        <td>
+                            <span class="badge-rol">
+                                @(item.TagCategorieNavigation?.NameCategorie ?? "Sin Categoría")
+                            </span>
+                        </td>
+                        <td>
+                            @if (item.IsActive)
+                            {
+                                <span class="badge-activo">✅ Activo</span>
+                            }
+                            else
+                            {
+                                <span class="badge-inactivo">❌ Inactivo</span>
+                            }
+                        </td>
+                        <td class="td-actions">
+                            <button class="btn-accion btn-edit"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEditar"
+                                    data-id="@item.TagProduct"
+                                    data-nombre="@item.NameProduct"
+                                    data-precio="@item.UnitPrice"
+                                    data-categoria="@item.TagCategorie"
+                                    data-desc="@item.DescriptionProduct"
+                                    data-activo="@item.IsActive.ToString().ToLower()">
+                                ✏️ Editar
+                            </button>
+                            <button class="btn-accion btn-details" data-bs-toggle="modal" data-bs-target="#modalVer"
+                                    data-nombre="@item.NameProduct" data-precio="@item.UnitPrice"
+                                    data-categoria="@(item.TagCategorieNavigation?.NameCategorie ?? "N/A")"
+                                    data-desc="@item.DescriptionProduct" data-estado="@(item.IsActive ? "Activo" : "Inactivo")">
+                                👁️ Ver
+                            </button>
+                            <button class="btn-accion btn-delete"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalDelete"
+                                    data-id="@item.TagProduct"
+                                    data-nombre="@item.NameProduct">
+                                🗑️ Borrar
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCrear" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content freeze-modal">
+            <div class="modal-header freeze-modal-header">
+                <h5 class="modal-title">🍦 Nuevo Producto</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-action="Create" method="post">
+                <div class="modal-body">
+                    <div class="modal-form-group">
+                        <label class="modal-label">Nombre del Producto</label>
+                        <input name="NameProduct" type="text" class="modal-input" required />
+                    </div>
+                    <div class="modal-form-group">
+                        <label class="modal-label">Precio Unitario</label>
+                        <input name="UnitPrice" type="number" step="0.01" class="modal-input" required />
+                    </div>
+                    <div class="modal-form-group">
+                        <label class="modal-label">Categoría</label>
+                        <select name="TagCategorie" class="modal-input" asp-items="ViewBag.TagCategorie"></select>
+                    </div>
+                    <div class="modal-form-group">
+                        <label class="modal-label">Descripción</label>
+                        <textarea name="DescriptionProduct" class="modal-input" rows="2"></textarea>
+                    </div>
+                    <div class="form-check mt-3">
+                        <input name="IsActive" type="checkbox" class="form-check-input" value="true" checked />
+                        <label class="modal-label">Activo</label>
+                    </div>
+                </div>
+                <div class="modal-footer freeze-modal-footer">
+                    <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">✕ Cancelar</button>
+                    <button type="submit" class="btn-modal-guardar">💾 Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalVer" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content freeze-modal">
+            <div class="modal-header freeze-modal-header" style="background-color: #7BB2D9;">
+                <h5 class="modal-title text-white">👁️ Detalle del Producto</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-item mb-3 text-center">
+                    <span style="font-size: 3rem;">🍨</span>
+                    <h3 id="verNombre" style="font-family: 'Fredoka One'; color: #3E2723;"></h3>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-6"><strong>Precio:</strong> <p id="verPrecio"></p></div>
+                    <div class="col-6"><strong>Estado:</strong> <p id="verEstado"></p></div>
+                </div>
+                <div class="mb-2"><strong>Categoría:</strong> <p id="verCategoria"></p></div>
+                <div class="mb-2"><strong>Descripción:</strong> <p id="verDesc"></p></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content freeze-modal">
+            <div class="modal-header freeze-modal-header">
+                <h5 class="modal-title">✏️ Editar Producto</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formEditar" asp-action="Edit" method="post">
+                <div class="modal-body">
+                    <input type="hidden" name="TagProduct" id="editId" />
+                    <div class="modal-form-group">
+                        <label class="modal-label">Nombre del Producto</label>
+                        <input name="NameProduct" id="editNombre" type="text" class="modal-input" required />
+                    </div>
+                    <div class="modal-form-group">
+                        <label class="modal-label">Precio</label>
+                        <input name="UnitPrice" id="editPrecio" type="number" step="0.01" class="modal-input" required />
+                    </div>
+                    <div class="modal-form-group">
+                        <label class="modal-label">Categoría</label>
+                        <select name="TagCategorie" id="editCategoria" class="modal-input" asp-items="ViewBag.TagCategorie"></select>
+                    </div>
+                    <div class="modal-form-group">
+                        <label class="modal-label">Descripción</label>
+                        <textarea name="DescriptionProduct" id="editDesc" class="modal-input" rows="2"></textarea>
+                    </div>
+                    <div class="form-check mt-3">
+                        <input name="IsActive" id="editActivo" type="checkbox" class="form-check-input" value="true" />
+                        <label class="modal-label">Activo</label>
+                    </div>
+                </div>
+                <div class="modal-footer freeze-modal-footer">
+                    <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">✕ Cancelar</button>
+                    <button type="submit" class="btn-modal-guardar">💾 Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDelete" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content freeze-modal">
+            <div class="modal-header freeze-modal-header-delete" style="background-color: #F4607A;">
+                <h5 class="modal-title text-white">🗑️ Eliminar Producto</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p>¿Estás seguro de que deseas eliminar este producto?</p>
+                <h4 id="deleteNombre" style="color: #F4607A; font-family: 'Fredoka One';"></h4>
+            </div>
+            <form id="formDelete" asp-action="Delete" method="post">
+                <input type="hidden" name="id" id="deleteId" />
+                <div class="modal-footer freeze-modal-footer">
+                    <button type="button" class="btn-modal-cancelar" data-bs-dismiss="modal">No, cancelar</button>
+                    <button type="submit" class="btn-modal-eliminar" style="background-color: #F4607A; color: white; border: none; border-radius: 20px; padding: 8px 20px;">Sí, eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // SCRIPT PARA VER
+        const modalVer = document.getElementById('modalVer');
+        modalVer.addEventListener('show.bs.modal', event => {
+            const btn = event.relatedTarget;
+            document.getElementById('verNombre').textContent = btn.getAttribute('data-nombre');
+            document.getElementById('verPrecio').textContent = "$" + btn.getAttribute('data-precio');
+            document.getElementById('verCategoria').textContent = btn.getAttribute('data-categoria');
+            document.getElementById('verDesc').textContent = btn.getAttribute('data-desc') || "Sin descripción";
+            document.getElementById('verEstado').textContent = btn.getAttribute('data-estado');
+        });
+
+        const modalEditar = document.getElementById('modalEditar');
+        if (modalEditar) {
+            modalEditar.addEventListener('show.bs.modal', event => {
+                const btn = event.relatedTarget;
+                document.getElementById('editId').value = btn.getAttribute('data-id');
+                document.getElementById('editNombre').value = btn.getAttribute('data-nombre');
+                document.getElementById('editPrecio').value = btn.getAttribute('data-precio');
+                document.getElementById('editCategoria').value = btn.getAttribute('data-categoria');
+                document.getElementById('editDesc').value = btn.getAttribute('data-desc');
+                document.getElementById('editActivo').checked = btn.getAttribute('data-activo') === "true";
+                document.getElementById('formEditar').action = "/Products/Edit/" + btn.getAttribute('data-id');
+            });
+        }
+
+        const modalDelete = document.getElementById('modalDelete');
+        if (modalDelete) {
+            modalDelete.addEventListener('show.bs.modal', event => {
+                const btn = event.relatedTarget;
+                document.getElementById('deleteNombre').textContent = btn.getAttribute('data-nombre');
+                document.getElementById('deleteId').value = btn.getAttribute('data-id');
+                document.getElementById('formDelete').action = "/Products/Delete/" + btn.getAttribute('data-id');
+            });
+        }
+    </script>
 }
-    </tbody>
-</table>
