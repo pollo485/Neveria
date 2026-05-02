@@ -16,6 +16,9 @@ builder.Services.AddDbContext<DbFreezeDreamContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("dbContext")));
 
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ISaleService, SaleService>();
+builder.Services.AddScoped<IInventoryService, InventoryService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

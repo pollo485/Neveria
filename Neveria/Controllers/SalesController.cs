@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Neveria.Models.dbFreezeDream;
+using Neveria.Services;
 using System.Text.Json;
 
 namespace Neveria.Controllers
@@ -8,8 +9,9 @@ namespace Neveria.Controllers
     public class SalesController : Controller
     {
         private readonly DbFreezeDreamContext _context;
+        private readonly ISaleService _saleService;
 
-        public SalesController(DbFreezeDreamContext context)
+        public SalesController(DbFreezeDreamContext context, ISaleService _saleService)
         {
             _context = context;
         }
