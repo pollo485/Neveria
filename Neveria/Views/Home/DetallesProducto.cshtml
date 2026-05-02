@@ -1,5 +1,9 @@
+@model List<Neveria.Models.DTOs.ProductoDetalleDTO>
+
 @{
     ViewData["Title"] = "Detalles de Producto";
+    // Serializa la lista de la BD a JSON para usarla en JavaScript
+    var productosJson = System.Text.Json.JsonSerializer.Serialize(Model);
 }
 
 @section Styles {
@@ -37,49 +41,47 @@
                 <div id="formContent" style="display:none;">
                     <div class="edit-header">
                         <span id="editIcon" class="edit-icon">🍦</span>
-                        <h3 id="editNombre">Cono de Fresa</h3>
+                        <h3 id="editNombre"></h3>
                     </div>
 
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>Nombre del producto</label>
+                            <label>NOMBRE DEL PRODUCTO</label>
                             <input type="text" id="inputNombre" class="freeze-field" />
                         </div>
 
                         <div class="form-group">
-                            <label>Precio ($)</label>
+                            <label>PRECIO ($)</label>
                             <input type="number" id="inputPrecio" class="freeze-field" min="0" />
                         </div>
 
                         <div class="form-group full-width">
-                            <label>Descripción</label>
+                            <label>DESCRIPCIÓN</label>
                             <textarea id="inputDesc" class="freeze-field" rows="3"></textarea>
                         </div>
 
                         <div class="form-group">
-                            <label>Categoría</label>
-                            <select id="inputCategoria" class="freeze-field">
-                                <option>Cono</option>
-                                <option>Copa</option>
-                                <option>Paleta</option>
-                                <option>Sundae</option>
-                                <option>Especial</option>
-                            </select>
+                            <label>CATEGORÍA</label>
+                            <!-- El select se llena dinámicamente con las categorías reales -->
+                            <select id="inputCategoria" class="freeze-field"></select>
                         </div>
 
                         <div class="form-group">
-                            <label>Disponibilidad</label>
+                            <label>DISPONIBILIDAD</label>
                             <select id="inputDisponible" class="freeze-field">
-                                <option>✅ Disponible</option>
-                                <option>❌ No disponible</option>
-                                <option>🔜 Temporada</option>
+                                <option value="true">✅ Disponible</option>
+                                <option value="false">❌ No disponible</option>
                             </select>
                         </div>
 
                         <div class="form-group full-width">
-                            <label>Ingredientes principales</label>
-                            <input type="text" id="inputIngredientes" class="freeze-field" />
+                            <label>STOCK ACTUAL</label>
+                            <input type="number" id="inputStock" class="freeze-field" readonly />
                         </div>
+                    </div>
+
+                    <div id="alertaStock" style="display:none; color:#c0392b; font-weight:700; margin-top:8px;">
+                        ⚠️ Stock bajo mínimo
                     </div>
 
                     <div class="btn-row">
@@ -96,75 +98,105 @@
 </div>
 
 @section Scripts {
-<script>
-    const productos = [
-        { id:1, icon:"🍦", nombre:"Cono de Fresa",    precio:35, desc:"Sabor fresco a fresa",       cat:"Cono",    disp:0, ing:"Leche, azúcar, fresa natural" },
-        { id:2, icon:"🍨", nombre:"Copa de Vainilla",  precio:40, desc:"Cremosa y suave",            cat:"Copa",    disp:0, ing:"Leche, vainilla, crema" },
-        { id:3, icon:"🍫", nombre:"Sundae Chocolate",  precio:45, desc:"Con salsa de chocolate",     cat:"Sundae",  disp:0, ing:"Leche, cacao, salsa chocolate" },
-        { id:4, icon:"🥭", nombre:"Paleta de Mango",   precio:28, desc:"Tropical y refrescante",     cat:"Paleta",  disp:0, ing:"Mango, azúcar, limón" },
-        { id:5, icon:"🌿", nombre:"Helado de Menta",   precio:42, desc:"Menta con chispas",          cat:"Copa",    disp:0, ing:"Leche, menta, chispas de chocolate" },
-        { id:6, icon:"🌈", nombre:"Copa Rainbow",      precio:55, desc:"Varios sabores",             cat:"Especial",disp:0, ing:"Leche, colorantes naturales, varios sabores" },
-    ];
+    <script>
+        // ← Aquí está el cambio clave: datos reales de la BD, no hardcodeados
+        const productos = @Html.Raw(productosJson);
 
-    const disps = ["✅ Disponible", "❌ No disponible", "🔜 Temporada"];
-    let seleccionado = null;
+        // Íconos por categoría (puedes agregar más)
+        function iconoPorCategoria(cat) {
+            const iconos = {
+                "Cono":    "🍦",
+                "Copa":    "🍨",
+                "Paleta":  "🧊",
+                "Sundae":  "🍫",
+                "Especial":"🌈"
+            };
+            return iconos[cat] || "🍦";
+        }
 
-    function renderProductos(lista) {
-        const cont = document.getElementById('productosLista');
-        cont.innerHTML = lista.map(p => `
-            <div class="producto-item ${seleccionado === p.id ? 'active' : ''}" onclick="seleccionar(${p.id})">
-                <span class="p-icon">${p.icon}</span>
-                <div class="p-info">
-                    <span class="p-nombre">${p.nombre}</span>
-                    <span class="p-precio">$${p.precio}</span>
+        let seleccionado = null;
+
+        // Llena el select de categorías con las que existen en la BD
+        function llenarCategorias() {
+            const cats = [...new Set(productos.map(p => p.NameCategorie))];
+            const sel = document.getElementById('inputCategoria');
+            sel.innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+
+        function renderProductos(lista) {
+            const cont = document.getElementById('productosLista');
+            cont.innerHTML = lista.map(p => `
+                <div class="producto-item ${seleccionado === p.TagProduct ? 'active' : ''}"
+                     onclick="seleccionar(${p.TagProduct})">
+                    <span class="p-icon">${iconoPorCategoria(p.NameCategorie)}</span>
+                    <div class="p-info">
+                        <span class="p-nombre">${p.NameProduct}</span>
+                        <span class="p-precio">$${p.UnitPrice}</span>
+                    </div>
+                    <span class="p-cat">${p.NameCategorie}</span>
                 </div>
-                <span class="p-cat">${p.cat}</span>
-            </div>
-        `).join('');
-    }
+            `).join('');
+        }
 
-    function filtrarProductos() {
-        const q = document.getElementById('searchInput').value.toLowerCase();
-        renderProductos(productos.filter(p => p.nombre.toLowerCase().includes(q)));
-    }
+        function filtrarProductos() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            renderProductos(productos.filter(p =>
+                p.NameProduct.toLowerCase().includes(q)
+            ));
+        }
 
-    function seleccionar(id) {
-        seleccionado = id;
-        const p = productos.find(x => x.id === id);
-        document.getElementById('emptyState').style.display  = 'none';
-        document.getElementById('formContent').style.display = 'block';
-        document.getElementById('editIcon').textContent      = p.icon;
-        document.getElementById('editNombre').textContent    = p.nombre;
-        document.getElementById('inputNombre').value         = p.nombre;
-        document.getElementById('inputPrecio').value         = p.precio;
-        document.getElementById('inputDesc').value           = p.desc;
-        document.getElementById('inputIngredientes').value   = p.ing;
-        document.getElementById('inputCategoria').value      = p.cat;
-        document.getElementById('inputDisponible').value     = disps[p.disp];
-        filtrarProductos();
-    }
+        function seleccionar(id) {
+            seleccionado = id;
+            const p = productos.find(x => x.TagProduct === id);
 
-    function deseleccionar() {
-        seleccionado = null;
-        document.getElementById('emptyState').style.display  = 'block';
-        document.getElementById('formContent').style.display = 'none';
-        filtrarProductos();
-    }
+            document.getElementById('emptyState').style.display  = 'none';
+            document.getElementById('formContent').style.display = 'block';
+            document.getElementById('editIcon').textContent      = iconoPorCategoria(p.NameCategorie);
+            document.getElementById('editNombre').textContent    = p.NameProduct;
+            document.getElementById('inputNombre').value         = p.NameProduct;
+            document.getElementById('inputPrecio').value         = p.UnitPrice;
+            document.getElementById('inputDesc').value           = p.DescriptionProduct ?? '';
+            document.getElementById('inputStock').value          = p.StockQuantity;
+            document.getElementById('inputCategoria').value      = p.NameCategorie;
+            document.getElementById('inputDisponible').value     = p.IsActive ? 'true' : 'false';
 
-    function mostrarToast(msg, color) {
-        const t = document.getElementById('toastMsg');
-        t.textContent = msg;
-        t.style.background = color;
-        t.style.opacity = '1';
-        t.style.transform = 'translateY(0)';
-        setTimeout(() => {
-            t.style.opacity = '0';
-            t.style.transform = 'translateY(10px)';
-        }, 2500);
-    }
+            // Muestra alerta si stock está bajo
+            document.getElementById('alertaStock').style.display = p.StockBajo ? 'block' : 'none';
 
-    function mostrarGuardado()  { mostrarToast('✅ Cambios guardados correctamente', '#5D8A4E'); }
+            filtrarProductos();
+        }
 
-    renderProductos(productos);
-</script>
+        function deseleccionar() {
+            seleccionado = null;
+            document.getElementById('emptyState').style.display  = 'block';
+            document.getElementById('formContent').style.display = 'none';
+            filtrarProductos();
+        }
+
+        function mostrarToast(msg, color) {
+            const t = document.getElementById('toastMsg');
+            t.textContent = msg;
+            t.style.background = color;
+            t.style.opacity = '1';
+            t.style.transform = 'translateY(0)';
+            setTimeout(() => {
+                t.style.opacity = '0';
+                t.style.transform = 'translateY(10px)';
+            }, 2500);
+        }
+
+        function mostrarGuardado() {
+            mostrarToast('✅ Cambios guardados correctamente', '#5D8A4E');
+        }
+
+        // Inicializar
+        llenarCategorias();
+        renderProductos(productos);
+
+        // Si viene un producto preseleccionado desde el controlador
+        @if (ViewBag.ProductoSeleccionado != null)
+        {
+                <text>seleccionar(@ViewBag.ProductoSeleccionado.TagProduct);</text>
+        }
+    </script>
 }

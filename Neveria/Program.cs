@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Neveria.Models;
 using Neveria.Models.dbFreezeDream;
+using Neveria.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<DbFreezeDreamContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("dbContext")));
+
+builder.Services.AddScoped<IProductService, ProductService>();
 
 var app = builder.Build();
 
