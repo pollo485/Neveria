@@ -1,74 +1,48 @@
-ï»¿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Neveria.Models.dbFreezeDream;
-using Neveria.Models.DTOs;
+using Neveria.Services;
 
 namespace Neveria.Controllers
 {
     public class CategoriesController : Controller
     {
-        private readonly DbFreezeDreamContext _context;
+        private readonly ICategoryService _categoryService;
+        private readonly DbFreezeDreamContext _context; // solo para Index
 
-        public CategoriesController(DbFreezeDreamContext context)
+        public CategoriesController(ICategoryService categoryService, DbFreezeDreamContext context)
         {
+            _categoryService = categoryService;
             _context = context;
         }
 
-        // GET: Categories
+        // GET: Categories — la vista espera IEnumerable<Category>, no el DTO
         public async Task<IActionResult> Index()
         {
-            var CategoriesDTOs = (from category in _context.Categories
-                             select new CategoriesDTO
-                             {
-                                 CategoryId = category.TagCategorie,
-                                 CategoryName = category.NameCategorie,
-                                 CategoryDescription = category.DescriptionCategorie
-                             }).ToList();
-
-            //var Categories = await _context.Categories.ToListAsync(); // no se que va aqui
             return View(await _context.Categories.ToListAsync());
         }
 
         // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.TagCategorie == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return NotFound();
+            var category = await _categoryService.GetByIdAsync(id.Value);
+            if (category == null) return NotFound();
             return View(category);
         }
 
         // GET: Categories/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+        public IActionResult Create() => View();
 
         // POST: Categories/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TagCategorie,NameCategorie,DescriptionCategorie")] Category category)
+        public async Task<IActionResult> Create(
+            [Bind("TagCategorie,NameCategorie,DescriptionCategorie")] Category category)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
-                await _context.SaveChangesAsync();
+                await _categoryService.CreateAsync(category);
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -77,49 +51,24 @@ namespace Neveria.Controllers
         // GET: Categories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return NotFound();
             var category = await _context.Categories.FindAsync(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
+            if (category == null) return NotFound();
             return View(category);
         }
 
         // POST: Categories/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TagCategorie,NameCategorie,DescriptionCategorie")] Category category)
+        public async Task<IActionResult> Edit(
+            int id,
+            [Bind("TagCategorie,NameCategorie,DescriptionCategorie")] Category category)
         {
-            if (id != category.TagCategorie)
-            {
-                return NotFound();
-            }
-
+            if (id != category.TagCategorie) return NotFound();
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(category);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CategoryExists(category.TagCategorie))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                var result = await _categoryService.EditAsync(id, category);
+                if (!result) return NotFound();
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -128,18 +77,9 @@ namespace Neveria.Controllers
         // GET: Categories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.TagCategorie == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return NotFound();
+            var category = await _context.Categories.FindAsync(id);
+            if (category == null) return NotFound();
             return View(category);
         }
 
@@ -148,18 +88,8 @@ namespace Neveria.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int TagCategorie)
         {
-            var category = await _context.Categories.FindAsync(TagCategorie);
-            if (category != null)
-            {
-                _context.Categories.Remove(category);
-                await _context.SaveChangesAsync();
-            }
+            await _categoryService.DeleteAsync(TagCategorie);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool CategoryExists(int id)
-        {
-            return _context.Categories.Any(e => e.TagCategorie == id);
         }
     }
 }
