@@ -15,12 +15,12 @@ namespace Neveria.Services
                     .ThenInclude(p => p.TagCategorieNavigation)
                 .Select(i => new InventarioDTO
                 {
-                    TagInventory  = i.TagInventory,
-                    NameProduct   = i.TagProductNavigation.NameProduct,
+                    TagInventory = i.TagInventory,
+                    NameProduct = i.TagProductNavigation.NameProduct,
                     NameCategorie = i.TagProductNavigation.TagCategorieNavigation.NameCategorie,
                     StockQuantity = i.StockQuantity,
-                    MinQuantity   = i.MinQuantity,
-                    UpdateAt      = i.UpdateAt
+                    MinQuantity = i.MinQuantity,
+                    UpdateAt = i.UpdateAt
                 })
                 .ToListAsync();
 
@@ -31,12 +31,12 @@ namespace Neveria.Services
                     .ThenInclude(p => p.TagCategorieNavigation)
                 .Select(i => new InventarioDTO
                 {
-                    TagInventory  = i.TagInventory,
-                    NameProduct   = i.TagProductNavigation.NameProduct,
+                    TagInventory = i.TagInventory,
+                    NameProduct = i.TagProductNavigation.NameProduct,
                     NameCategorie = i.TagProductNavigation.TagCategorieNavigation.NameCategorie,
                     StockQuantity = i.StockQuantity,
-                    MinQuantity   = i.MinQuantity,
-                    UpdateAt      = i.UpdateAt
+                    MinQuantity = i.MinQuantity,
+                    UpdateAt = i.UpdateAt
                 })
                 .ToListAsync();
 
@@ -85,8 +85,14 @@ namespace Neveria.Services
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<List<Inventory>> GetAllRawListAsync() =>
+            await _context.Inventories
+                .Include(i => i.TagProductNavigation)
+                .ThenInclude(p => p.TagCategorieNavigation)
+                .ToListAsync();
 
         public async Task<bool> ExistsAsync(int id) =>
             await _context.Inventories.AnyAsync(i => i.TagInventory == id);
+
     }
 }

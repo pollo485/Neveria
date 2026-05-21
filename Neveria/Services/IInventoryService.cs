@@ -13,5 +13,6 @@ namespace Neveria.Services
         Task<bool> EditAsync(int id, Inventory inventory);
         Task<bool> DeleteAsync(int id);
         Task<bool> ExistsAsync(int id);
+        Task<List<Inventory>> GetAllRawListAsync();
     }
 }

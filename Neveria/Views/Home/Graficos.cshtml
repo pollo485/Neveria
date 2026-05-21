@@ -1,5 +1,18 @@
+@using Neveria.Models.DTOs
+@model List<VentasPorProductoDTO>
+
 @{
     ViewData["Title"] = "Detalles Gráficos";
+    var stats = ViewBag.Estadisticas as GraficosEstadisticasDTO;
+    var recientes = ViewBag.Recientes as List<VentaDetalleTablaDTO>;
+
+    // Datos para gráfica de pie (por producto)
+    var labelesPie = Model.Select(x => x.NameProduct).ToList();
+    var datosPie = Model.Select(x => x.TotalUnidades).ToList();
+
+    // Colores para el pie (se repiten si hay más productos)
+    var colores = new[] { "#F4607A","#87CEEB","#5D4037","#F5C97A","#5D8A4E",
+                          "#9C27B0","#FF9800","#00BCD4","#E91E63","#4CAF50" };
 }
 
 @section Styles {
@@ -13,30 +26,30 @@
     <div class="stats-row">
         <div class="stat-card">
             <div class="ico">🍦</div>
-            <div class="num">248</div>
+            <div class="num">@stats?.VentasMes</div>
             <div class="lbl">Ventas este mes</div>
         </div>
         <div class="stat-card">
             <div class="ico">💰</div>
-            <div class="num">$9,820</div>
+            <div class="num">$@stats?.IngresosTotales.ToString("N0")</div>
             <div class="lbl">Ingresos totales</div>
         </div>
         <div class="stat-card">
             <div class="ico">🏆</div>
-            <div class="num">Fresa</div>
-            <div class="lbl">Sabor más vendido</div>
+            <div class="num">@stats?.ProductoMasVendido</div>
+            <div class="lbl">Más vendido</div>
         </div>
         <div class="stat-card">
-            <div class="ico">👥</div>
-            <div class="num">134</div>
-            <div class="lbl">Clientes únicos</div>
+            <div class="ico">📦</div>
+            <div class="num">@Model.Count</div>
+            <div class="lbl">Productos con ventas</div>
         </div>
     </div>
 
     <!-- Gráficas -->
     <div class="charts-row">
         <div class="chart-card">
-            <h5>🥧 Ventas por sabor</h5>
+            <h5>🥧 Ventas por producto</h5>
             <canvas id="pieChart" class="chart-canvas"></canvas>
         </div>
         <div class="chart-card">
@@ -59,98 +72,88 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>🍦 Cono de Fresa</td>
-                    <td>5</td>
-                    <td>$35</td>
-                    <td>$175</td>
-                    <td>05/03/2025</td>
-                </tr>
-                <tr>
-                    <td>🍨 Copa de Vainilla</td>
-                    <td>3</td>
-                    <td>$40</td>
-                    <td>$120</td>
-                    <td>05/03/2025</td>
-                </tr>
-                <tr>
-                    <td>🍫 Sundae Chocolate</td>
-                    <td>7</td>
-                    <td>$45</td>
-                    <td>$315</td>
-                    <td>04/03/2025</td>
-                </tr>
-                <tr>
-                    <td>🥭 Paleta de Mango</td>
-                    <td>10</td>
-                    <td>$28</td>
-                    <td>$280</td>
-                    <td>04/03/2025</td>
-                </tr>
-                <tr>
-                    <td>🌿 Helado de Menta</td>
-                    <td>4</td>
-                    <td>$42</td>
-                    <td>$168</td>
-                    <td>03/03/2025</td>
-                </tr>
+                @if (recientes != null)
+                {
+                    foreach (var v in recientes)
+                    {
+                        <tr>
+                            <td>🍦 @v.NameProduct</td>
+                            <td>@v.Quantity</td>
+                            <td>$@v.Price.ToString("N2")</td>
+                            <td>$@v.Total.ToString("N2")</td>
+                            <td>@v.DateSale.ToString("dd/MM/yyyy")</td>
+                        </tr>
+                    }
+                }
             </tbody>
         </table>
     </div>
 </div>
 
 @section Scripts {
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script>
-    Chart.defaults.color = '#fff';
-    Chart.defaults.font.family = 'Nunito';
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script>
+        Chart.defaults.color = '#fff';
+        Chart.defaults.font.family = 'Nunito';
 
-    new Chart(document.getElementById('pieChart'), {
-        type: 'pie',
-        data: {
-            labels: ['Fresa', 'Vainilla', 'Chocolate', 'Mango', 'Menta'],
-            datasets: [{
-                data: [35, 22, 20, 15, 8],
-                backgroundColor: ['#F4607A', '#87CEEB', '#5D4037', '#F5C97A', '#5D8A4E'],
-                borderColor: 'rgba(255,255,255,0.3)',
-                borderWidth: 2
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { position: 'bottom', labels: { color: '#fff', font: { size: 12 } } }
-            }
-        }
-    });
+        // ── Datos desde el servidor ──────────────────────────────
+        const labelesPie = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(labelesPie));
+        const datosPie   = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(datosPie));
+        const coloresPie = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                                                            colores.Take(labelesPie.Count).ToArray()));
 
-    new Chart(document.getElementById('barChart'), {
-        type: 'bar',
-        data: {
-            labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'],
-            datasets: [
-                {
-                    label: 'Este mes',
-                    data: [42, 68, 75, 63],
-                    backgroundColor: '#87CEEB',
-                    borderRadius: 8
-                },
-                {
-                    label: 'Mes anterior',
-                    data: [35, 55, 60, 50],
-                    backgroundColor: '#40E0D0',
-                    borderRadius: 8
+    const semanaActual   = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                                                                stats?.VentasSemanaActual ?? new List<int> { 0, 0, 0, 0 }));
+    const semanaAnterior = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                                                                stats?.VentasSemanaAnterior ?? new List<int> { 0, 0, 0, 0 }));
+    // ────────────────────────────────────────────────────────
+
+        new Chart(document.getElementById('pieChart'), {
+            type: 'pie',
+            data: {
+                labels: labelesPie,
+                datasets: [{
+                    data: datosPie,
+                    backgroundColor: coloresPie,
+                    borderColor: 'rgba(255,255,255,0.3)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#fff', font: { size: 12 } } }
                 }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { labels: { color: '#fff' } } },
-            scales: {
-                x: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } },
-                y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } }
             }
-        }
-    });
-</script>
+        });
+
+        new Chart(document.getElementById('barChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'],
+                datasets: [
+                    {
+                        label: 'Este mes',
+                        data: semanaActual,
+                        backgroundColor: '#87CEEB',
+                        borderRadius: 8
+                    },
+                    {
+                        label: 'Mes anterior',
+                        data: semanaAnterior,
+                        backgroundColor: '#40E0D0',
+                        borderRadius: 8
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { labels: { color: '#fff' } } },
+                scales: {
+                    x: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                    y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                }
+            }
+        });
+    </script>
 }

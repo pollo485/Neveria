@@ -19,16 +19,15 @@ namespace Neveria.Controllers
         // GET: Inventories
         public async Task<IActionResult> Index()
         {
-            // Select de productos que aún NO tienen inventario registrado
             var idsConInventario = await _inventoryService.GetProductIdsWithInventoryAsync();
-            var todosProductos   = await _productService.GetAllRawAsync();
-            var sinInventario    = todosProductos
+            var todosProductos = await _productService.GetAllRawAsync();
+            var sinInventario = todosProductos
                 .Where(p => !idsConInventario.Contains(p.TagProduct))
                 .Select(p => new { p.TagProduct, p.NameProduct });
 
             ViewData["TagProduct"] = new SelectList(sinInventario, "TagProduct", "NameProduct");
 
-            var inventario = await _inventoryService.GetAllAsync();
+            var inventario = await _inventoryService.GetAllRawListAsync(); // ← CAMBIA ESTO
             return View(inventario);
         }
 

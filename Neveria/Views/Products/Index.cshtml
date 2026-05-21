@@ -7,7 +7,6 @@
 <link rel="stylesheet" href="~/css/Categories.css" />
 
 <style>
-    /* Ajuste para que la tabla no se corte */
     .table-responsive-custom {
         width: 100%;
         overflow-x: auto;
@@ -21,6 +20,13 @@
         width: 100% !important;
         margin-bottom: 0;
         vertical-align: middle;
+        table-layout: auto !important; /* ← clave: distribuye ancho automático */
+    }
+
+    .td-actions {
+        width: auto !important; /* ← sobreescribe el width fijo del CSS */
+        white-space: nowrap !important; /* ← evita que los botones se partan */
+        min-width: 220px !important; /* ← espacio mínimo para los 3 botones */
     }
 </style>
 
@@ -32,7 +38,7 @@
         </button>
     </div>
 
-    <div class="table-wrapper">
+    <div class="table-wrapper" style="overflow-x: auto;">
         <table class="freeze-table">
             <thead>
                 <tr>
@@ -59,11 +65,13 @@
                         <td>
                             @if (item.IsActive)
                             {
-                                <span class="badge-activo">✅ Activo</span>
+                                <input type="checkbox" checked disabled style="accent-color:#4CAF50; width:18px; height:18px;" />
+                                <span style="color:#4CAF50; font-weight:700; margin-left:4px;">Activo</span>
                             }
                             else
                             {
-                                <span class="badge-inactivo">❌ Inactivo</span>
+                                <input type="checkbox" disabled style="accent-color:#e74c3c; width:18px; height:18px;" />
+                                <span style="color:#aaa; font-weight:700; margin-left:4px;">Inactivo</span>
                             }
                         </td>
                         <td class="td-actions">

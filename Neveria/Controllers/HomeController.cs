@@ -10,17 +10,20 @@ namespace Neveria.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IProductService         _productService;
-        private readonly ISaleService            _saleService;
+        private readonly IProductService _productService;
+        private readonly ISaleService _saleService;
+        private readonly DbFreezeDreamContext _context;
 
         public HomeController(
             ILogger<HomeController> logger,
             IProductService productService,
-            ISaleService saleService)
+            ISaleService saleService,
+            DbFreezeDreamContext context)
         {
-            _logger         = logger;
+            _logger = logger;
             _productService = productService;
-            _saleService    = saleService;
+            _saleService = saleService;
+            _context = context;
         }
 
         // GET: /Home/Login
@@ -30,13 +33,42 @@ namespace Neveria.Controllers
         // POST: /Home/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(string usuario, string contrasena)
+        public async Task<IActionResult> Login(string usuario, string contrasena)
         {
-            if (!string.IsNullOrEmpty(usuario) && !string.IsNullOrEmpty(contrasena))
-                return RedirectToAction("Inicio");
+            if (string.IsNullOrEmpty(usuario) || string.IsNullOrEmpty(contrasena))
+            {
+                ViewBag.Error = "Por favor llena todos los campos.";
+                return View();
+            }
 
-            ViewBag.Error = "Usuario o contraseña incorrectos.";
-            return View();
+            var user = await _context.Users
+                .Include(u => u.TagRoleNavigation)
+                .FirstOrDefaultAsync(u =>
+                    (u.UserName == usuario || u.Email == usuario) &&
+                    u.Password == contrasena &&
+                    u.IsActive);
+
+            if (user == null)
+            {
+                ViewBag.Error = "Usuario o contraseña incorrectos.";
+                return View();
+            }
+
+            // Guardar sesión
+            HttpContext.Session.SetInt32("TagUser", user.TagUser);
+            HttpContext.Session.SetString("UserName", user.UserName);
+            HttpContext.Session.SetString("Name", user.Name);
+            HttpContext.Session.SetInt32("TagRole", user.TagRole);
+            HttpContext.Session.SetString("NameRole", user.TagRoleNavigation.NameRole);
+
+            return RedirectToAction("Inicio");
+        }
+
+        // GET: /Home/Logout
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login");
         }
 
         // GET: /Home/Registro
@@ -72,11 +104,9 @@ namespace Neveria.Controllers
         public async Task<IActionResult> DetallesProducto(int? id)
         {
             var productos = await _productService.GetAllActiveAsync();
-
             var seleccionado = id.HasValue
                 ? productos.FirstOrDefault(p => p.TagProduct == id)
                 : productos.FirstOrDefault();
-
             ViewBag.ProductoSeleccionado = seleccionado;
             return View(productos);
         }
@@ -87,8 +117,14 @@ namespace Neveria.Controllers
         // GET: /Home/Graficos
         public async Task<IActionResult> Graficos()
         {
-            var datos = await _saleService.GetVentasPorProductoAsync();
-            return View(datos);
+            var porProducto = await _saleService.GetVentasPorProductoAsync();
+            var estadisticas = await _saleService.GetEstadisticasAsync();
+            var recientes = await _saleService.GetVentasRecientesAsync(10);
+
+            ViewBag.Estadisticas = estadisticas;
+            ViewBag.Recientes = recientes;
+
+            return View(porProducto); // el Model sigue siendo List<VentasPorProductoDTO>
         }
 
         // GET: /Home/Privacy

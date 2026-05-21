@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Neveria.Models.dbFreezeDream;
 using Neveria.Models.DTOs;
 
@@ -77,7 +77,7 @@ namespace Neveria.Services
         {
             var product = await _context.Products.FindAsync(id);
             if (product == null) return false;
-            _context.Products.Remove(product);
+            product.IsActive = false;          // ← solo desactiva
             await _context.SaveChangesAsync();
             return true;
         }

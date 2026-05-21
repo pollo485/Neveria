@@ -117,6 +117,25 @@
                     transform: translateX(3px);
                 }
 
+        /* Pill de usuario */
+        .nav-pill-user {
+            background: #F4607A;
+            color: #fff !important;
+            border: none;
+            border-radius: 20px;
+            padding: 7px 18px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            margin-left: auto;
+            text-decoration: none !important;
+            transition: background 0.2s;
+        }
+
+            .nav-pill-user:hover {
+                background: #d94f68;
+                color: #fff !important;
+            }
+
         footer {
             background: #c9b99a;
             color: #fff;
@@ -126,7 +145,7 @@
             font-size: 1rem;
             margin-top: 40px;
         }
-        /* Reset para tablas personalizadas */
+
         .freeze-table thead tr {
             background: #F4607A !important;
         }
@@ -155,15 +174,12 @@
             border-radius: 20px !important;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
             overflow: hidden !important;
+            width: 100% !important;
+            display: block !important;
         }
 
         .categories-wrapper {
             width: 100% !important;
-        }
-
-        .table-wrapper {
-            width: 100% !important;
-            display: block !important;
         }
 
         main {
@@ -175,46 +191,59 @@
 </head>
 <body>
 
+    @{
+        var nombreUsuario = Context.Session.GetString("Name");
+        var rolNombre = Context.Session.GetString("NameRole");
+        bool esCliente = rolNombre == "Cliente";
+        bool logueado = !string.IsNullOrEmpty(nombreUsuario);
+    }
+
     <nav class="navbar-freeze">
         <a class="brand" href="/Home/Inicio">🍦 Freeze Dream</a>
 
         <a class="nav-pill" href="/Home/Inicio">Home</a>
 
-        <!-- Dropdown: Productos -->
-        <div class="dropdown">
-            <button class="nav-pill-dropdown dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                Productos
-            </button>
-            <ul class="dropdown-menu freeze-dropdown-menu">
+        @if (esCliente)
+        {
+            <!-- Cliente: solo ve Comprar y Gráficos -->
+            <a class="nav-pill" href="/Sales/Create">🛒 Comprar</a>
+            <a class="nav-pill" href="/Home/Graficos">📊 Gráficos</a>
+        }
+        else
+        {
+            <!-- Todos los demás roles ven el menú completo -->
+            <div class="dropdown">
+                <button class="nav-pill-dropdown dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Productos
+                </button>
+                <ul class="dropdown-menu freeze-dropdown-menu">
+                    <li><a class="dropdown-item" href="/Sales/Create">🛒 Comprar</a></li>
+                    <li><a class="dropdown-item" href="/Home/DetallesProducto">🔍 Detalles</a></li>
+                    <li><a class="dropdown-item" href="/Home/Ventas">💵 Vender</a></li>
+                    <li class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="/Products/index">🍦 Productos</a></li>
+                    <li><a class="dropdown-item" href="/Categories/index">📁 Categorías</a></li>
+                    <li><a class="dropdown-item" href="/Inventories/index">📦 Inventario</a></li>
+                    <li class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="/Sales/index">💳 Historial de Ventas</a></li>
+                </ul>
+            </div>
 
-                <li><a class="dropdown-item" href="/Sales/Create"> Comprar</a></li>
-                <li><a class="dropdown-item" href="/Home/DetallesProducto"> Detalles</a></li>
-                <li><a class="dropdown-item" href="/Home/Ventas"> Vender</a></li>
+            <div class="dropdown">
+                <button class="nav-pill-dropdown dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Detalles gráficos
+                </button>
+                <ul class="dropdown-menu freeze-dropdown-menu">
+                    <li><a class="dropdown-item" href="/Home/Graficos">📊 Ver gráficas</a></li>
+                    <li><a class="dropdown-item" href="/Roles/index">🎭 Roles</a></li>
+                </ul>
+            </div>
+        }
 
-                <li class="dropdown-divider"></li> @* Una línea divisoria para organizar *@
-
-                <li><a class="dropdown-item" href="/Products/index">🍦 Productos</a></li>
-                <li><a class="dropdown-item" href="/Categories/index">📁 Categorías</a></li>
-                <li><a class="dropdown-item" href="/Inventories/index">📦 Inventario</a></li>
-
-                <li class="dropdown-divider"></li>
-
-                @* Esta ruta ahora apunta al Index de Sales que es donde pusimos el botón de Nueva Venta *@
-                <li><a class="dropdown-item" href="/Sales/index">💳 Historial de Ventas</a></li>
-            </ul>
-        </div>
-
-        <!-- Dropdown: Detalles gráficos (incluye Ventas) -->
-        <div class="dropdown">
-            <button class="nav-pill-dropdown dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                Detalles gráficos
-            </button>
-            <ul class="dropdown-menu freeze-dropdown-menu">
-                <li><a class="dropdown-item" href="/Home/Graficos">📊 Ver gráficas</a></li>
-                
-                <li><a class="dropdown-item" href="/Roles/index">🎭 Roles</a></li>
-            </ul>
-        </div>
+        @if (logueado)
+        {
+            <a class="nav-pill-user" href="/Home/Logout">👤 @nombreUsuario — Cerrar sesión</a>
+        }
     </nav>
 
     <main style="width: 100%; box-sizing: border-box;">

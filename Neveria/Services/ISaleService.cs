@@ -13,5 +13,7 @@ namespace Neveria.Services
         Task<List<object>> GetProductosActivosAsync();  // para el carrito JSON
         Task<bool> CreateAsync(IFormCollection form);
         Task<bool> DeleteAsync(int id);
+        Task<GraficosEstadisticasDTO> GetEstadisticasAsync();
+        Task<List<VentaDetalleTablaDTO>> GetVentasRecientesAsync(int top = 10);
     }
 }

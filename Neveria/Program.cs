@@ -15,6 +15,13 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<DbFreezeDreamContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("dbContext")));
 
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IInventoryService, InventoryService>();
@@ -34,6 +41,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();   // ← Necesario para que carguen los CSS de wwwroot
 
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthorization();
 

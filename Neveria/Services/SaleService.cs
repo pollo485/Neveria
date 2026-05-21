@@ -177,5 +177,74 @@ namespace Neveria.Services
             await _context.SaveChangesAsync();
             return true;
         }
+        // Stats rápidas para el dashboard
+        public async Task<GraficosEstadisticasDTO> GetEstadisticasAsync()
+        {
+            var ahora = DateTime.Now;
+            var inicioMes = new DateTime(ahora.Year, ahora.Month, 1);
+            var inicioMesAnterior = inicioMes.AddMonths(-1);
+
+            // Ventas este mes (cantidad de registros en Sales)
+            var ventasMes = await _context.Sales
+                .Where(s => s.DateSale >= inicioMes)
+                .CountAsync();
+
+            // Ingresos totales
+            var ingresos = await _context.Sales.SumAsync(s => s.DueTotal);
+
+            // Producto más vendido
+            var masVendido = await _context.SaleDetails
+                .Include(sd => sd.TagProductNavigation)
+                .GroupBy(sd => sd.TagProductNavigation.NameProduct)
+                .Select(g => new { Nombre = g.Key, Total = g.Sum(x => x.Quantity) })
+                .OrderByDescending(x => x.Total)
+                .FirstOrDefaultAsync();
+
+            // Ventas por semana este mes y mes anterior
+            var ventasPorSemanaEsteMes = await GetVentasPorSemanaAsync(inicioMes, ahora);
+            var ventasPorSemanaMesAnt = await GetVentasPorSemanaAsync(inicioMesAnterior, inicioMes);
+
+            return new GraficosEstadisticasDTO
+            {
+                VentasMes = ventasMes,
+                IngresosTotales = ingresos,
+                ProductoMasVendido = masVendido?.Nombre ?? "—",
+                VentasSemanaActual = ventasPorSemanaEsteMes,
+                VentasSemanaAnterior = ventasPorSemanaMesAnt
+            };
+        }
+
+        private async Task<List<int>> GetVentasPorSemanaAsync(DateTime inicio, DateTime fin)
+        {
+            var ventas = await _context.Sales
+                .Where(s => s.DateSale >= inicio && s.DateSale < fin)
+                .ToListAsync();
+
+            var semanas = new List<int> { 0, 0, 0, 0 };
+            foreach (var v in ventas)
+            {
+                int dia = (v.DateSale - inicio).Days;
+                int semana = Math.Min(dia / 7, 3); // semanas 0-3
+                semanas[semana]++;
+            }
+            return semanas;
+        }
+
+        // Ventas recientes para la tabla
+        public async Task<List<VentaDetalleTablaDTO>> GetVentasRecientesAsync(int top = 10) =>
+            await _context.SaleDetails
+                .Include(sd => sd.TagProductNavigation)
+                .Include(sd => sd.TaglSaleNavigation)
+                .OrderByDescending(sd => sd.TaglSaleNavigation.DateSale)
+                .Take(top)
+                .Select(sd => new VentaDetalleTablaDTO
+                {
+                    NameProduct = sd.TagProductNavigation.NameProduct,
+                    Quantity = sd.Quantity,
+                    Price = sd.Price,
+                    Total = sd.Quantity * sd.Price,
+                    DateSale = sd.TaglSaleNavigation.DateSale
+                })
+                .ToListAsync();
     }
 }
